@@ -35,11 +35,13 @@ export default function NylasCustomScheduler({
   bookingId = "",
   cancelFlow = false,
   rescheduleFlow = false,
+  sessionId
 }: {
   configId: string;
   bookingId?: string;
   cancelFlow?: boolean;
-  rescheduleFlow?: boolean;
+    rescheduleFlow?: boolean;
+    sessionId?: string;
 }) {
   const detailsConfirmed = async (e: CustomEvent) => {
     console.log("Booking made", e);
@@ -54,7 +56,6 @@ export default function NylasCustomScheduler({
         {() => {
           return (
             <Scheduler.NylasScheduling
-              configurationId={configId}
               themeConfig={{
                 "--nylas-primary": "#ebdbb0",
                 "--nylas-base-900": "#ebdbb0"
@@ -68,6 +69,8 @@ export default function NylasCustomScheduler({
               }}
               {...(cancelFlow && { cancelBookingId: bookingId })}
               {...(rescheduleFlow && { rescheduleBookingId: bookingId })}
+              {...(sessionId && { sessionId })}
+              {...(!sessionId && { configurationId:configId })}
             />
           );
         }}
