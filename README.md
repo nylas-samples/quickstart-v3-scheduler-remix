@@ -4,6 +4,9 @@
 
 ## Development
 
+- Add environment variable to your project
+- Add redirect_uri as `JavaScript` to your Nylas application
+
 Run the Vite dev server:
 
 ```shellscript
