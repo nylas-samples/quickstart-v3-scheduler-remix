@@ -51,7 +51,7 @@ export default function NylasSchedulerEditor({nylasClientId,domain}:EditorProps)
               }]}
               defaultSchedulerConfigState={{
                 selectedConfiguration: {
-                  requires_session_auth: false,
+                  requires_session_auth: true,
                   scheduler: {
                     // callback URLs to be set in email confirmation messages
                     rescheduling_url: `${window.location.origin}/scheduler/:config.id/reschedule/:booking_id`,

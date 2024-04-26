@@ -22,7 +22,10 @@ const createSchedulerSession = async (sessionPayload: SessionRequest) => {
         const {data} = await ApiService.create<SessionResponse>({
             url: API_ENDPOINT,
             config: {
-                body
+                body:JSON.stringify(body),
+                headers: {
+                    "Content-Type":"application/json"
+                }
             },
             authType:AuthTypes.API_KEY
         })
@@ -30,8 +33,8 @@ const createSchedulerSession = async (sessionPayload: SessionRequest) => {
         return data.session_id
     } catch (error) {
         logger.error("Error creating sessions", error)
-        throw Error()
     }
+    return null;
     
 }
 

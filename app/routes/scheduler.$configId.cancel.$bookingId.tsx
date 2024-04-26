@@ -1,15 +1,40 @@
-import { useParams } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { json, redirect, useLoaderData } from "@remix-run/react";
 import NylasCustomScheduler from "~/components/scheduler";
+import sessionServer from "~/models/nylas/session.server";
 
-export async function loader() {
-  return null;
+type LoaderData = {
+  configurationId: string;
+  sessionId: string;
+  bookingId: string;
+}
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  console.log(params)
+  const configurationId = params.configId
+  const bookingId = params.bookingId
+
+  if (!configurationId || !bookingId) {
+    return redirect("/error")
+  }
+
+  const sessionId = await sessionServer.createSchedulerSession({
+    configurationId,
+    ttl:30
+  })
+  return json({
+    configurationId,
+    sessionId,
+    bookingId
+  })
 }
 export default function Scheduler() {
-  const params = useParams();
+  const {configurationId,bookingId,sessionId} = useLoaderData<LoaderData>();
   return (
     <NylasCustomScheduler
-      configId={params.configId ?? ""}
-      bookingId={params.bookingId}
+      configId={configurationId ?? ""}
+      bookingId={bookingId}
+      sessionId ={sessionId}
       cancelFlow={true}
     />
   );
