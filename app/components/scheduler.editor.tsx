@@ -1,14 +1,16 @@
-
 import { ClientOnly } from "remix-utils/client-only";
-import Scheduler from "./nylas-react.client";
 import FallBack from "./fallback";
+import Scheduler from "./nylas-react.client";
 
 interface EditorProps {
   nylasClientId: string;
   domain?: string;
 }
 
-export default function NylasSchedulerEditor({nylasClientId,domain}:EditorProps) {
+export default function NylasSchedulerEditor({
+  nylasClientId,
+  domain,
+}: EditorProps) {
   return (
     <div className=" m-auto flex items-center justify-center">
       <ClientOnly fallback={<FallBack />}>
@@ -28,7 +30,7 @@ export default function NylasSchedulerEditor({nylasClientId,domain}:EditorProps)
                 },
                 deleteButtonClick: async (e) => {
                   console.log("Page deleted", e);
-                }
+                },
               }}
               mode="app"
               schedulerPreviewLink={`${window.location.origin}/scheduler/{config.id}`}
@@ -39,28 +41,29 @@ export default function NylasSchedulerEditor({nylasClientId,domain}:EditorProps)
                 hosted: true,
                 accessType: "offline",
               }}
-              defaultAuthArgs={[{
-                provider: "google",
-                scope: [
-                  "openid",
-                  "https://www.googleapis.com/auth/userinfo.email",
-                  "https://www.googleapis.com/auth/userinfo.profile",
-                  "https://www.googleapis.com/auth/calendar",
-                ],
-                includeGrantScopes: false,
-              }]}
+              defaultAuthArgs={[
+                {
+                  provider: "google",
+                  scope: [
+                    "openid",
+                    "https://www.googleapis.com/auth/userinfo.email",
+                    "https://www.googleapis.com/auth/userinfo.profile",
+                    "https://www.googleapis.com/auth/calendar",
+                  ],
+                  includeGrantScopes: false,
+                },
+              ]}
               defaultSchedulerConfigState={{
                 selectedConfiguration: {
                   requires_session_auth: true,
                   scheduler: {
                     // callback URLs to be set in email confirmation messages
-                    rescheduling_url: `${window.location.origin}/scheduler/:config.id/reschedule/:booking_id`,
-                    cancellation_url: `${window.location.origin}/scheduler/:config.id/cancel/:booking_id`,
+                    rescheduling_url: `${window.location.origin}/scheduler/reschedule/:booking_ref`,
+                    cancellation_url: `${window.location.origin}/scheduler/cancel/:booking_ref`,
                   },
                 },
               }}
-            >
-            </Scheduler.NylasSchedulerEditor>
+            ></Scheduler.NylasSchedulerEditor>
           );
         }}
       </ClientOnly>
