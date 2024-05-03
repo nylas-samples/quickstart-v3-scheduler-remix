@@ -50,6 +50,18 @@ export default function NylasCustomScheduler({
   const commonEventHander = async (e: CustomEvent) => {
     console.log("Any event", e);
   };
+
+  const props = () => {
+    if (sessionId) {
+      return {
+        sessionId,
+      };
+    }
+
+    return {
+      configurationId: configId,
+    };
+  };
   return (
     <div className=" m-auto flex items-center justify-center">
       <ClientOnly fallback={<FallBack />}>
@@ -64,13 +76,13 @@ export default function NylasCustomScheduler({
               nylasBranding={false}
               eventOverrides={{
                 detailsConfirmed,
+                bookingInfo: detailsConfirmed,
                 nameChanged: commonEventHander,
                 emailChanged: commonEventHander,
               }}
               {...(cancelFlow && { cancelBookingRef: bookingId })}
               {...(rescheduleFlow && { rescheduleBookingRef: bookingId })}
-              {...(sessionId && { sessionId })}
-              {...(!sessionId && { configurationId: configId })}
+              {...props()}
             />
           );
         }}
