@@ -5,9 +5,19 @@
 ## Development
 
 - Add environment variable to your project
+    - ```shellscript
+        NYLAS_CLIENT_ID= 
+        NYLAS_API_KEY=
+        API_ENDPOINT=https://api.us.nylas.com/v3
+        ```
 - Add redirect_uri as `JavaScript` to your Nylas application
+    - `http://localhost:{port}/editor`
 
 Run the Vite dev server:
+
+```shellscript
+npm install
+```
 
 ```shellscript
 npm run dev
