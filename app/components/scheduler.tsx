@@ -30,6 +30,12 @@ const THEME = {
   "--nylas-border-radius-3x": "10px",
 };
 
+interface CustomEvent<T = unknown> extends Event {
+  readonly detail: T;
+}
+
+type NylasSchedulingCustomEvent<T> = CustomEvent<T>;
+
 export default function NylasCustomScheduler({
   configId,
   bookingId = "",
@@ -49,6 +55,16 @@ export default function NylasCustomScheduler({
 
   const commonEventHander = async (e: CustomEvent) => {
     console.log("Any event", e);
+  };
+
+  const onBookingRefExtracted = (
+    event: NylasSchedulingCustomEvent<{
+      configurationId: string;
+      bookingId: string;
+    }>
+  ) => {
+    console.log("Config ID", event.detail.configurationId),
+      console.log("BookingID", event.detail.bookingId);
   };
 
   const props = () => {
@@ -74,6 +90,7 @@ export default function NylasCustomScheduler({
               }}
               schedulerApiUrl="https://api.us.nylas.com/v3"
               nylasBranding={false}
+              onBookingRefExtracted={onBookingRefExtracted}
               eventOverrides={{
                 detailsConfirmed,
                 bookingInfo: detailsConfirmed,
