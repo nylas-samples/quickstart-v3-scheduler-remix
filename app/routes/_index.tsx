@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export default function Home() {
   return (
-    <div className="max-h-screen-xl">
+    <div className="h-full">
       <section className="bg-gray-900 text-white">
         <div className="mx-auto h-6/6 max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <div className="mx-auto max-w-lg text-center">
