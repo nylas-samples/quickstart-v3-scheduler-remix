@@ -80,7 +80,7 @@ export default function NylasCustomScheduler({
   }, [sessionId, bookingInfo, configId]);
 
   return (
-    <div className=" m-auto flex items-center justify-center">
+    <div className=" m-auto flex h-full items-center justify-center">
       <ClientOnly fallback={<FallBack />}>
         {() => {
           return (
