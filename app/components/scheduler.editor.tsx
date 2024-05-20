@@ -12,7 +12,7 @@ export default function NylasSchedulerEditor({
   domain,
 }: EditorProps) {
   return (
-    <div className=" m-auto flex items-center justify-center">
+    <div className=" m-auto flex items-center justify-center h-full">
       <ClientOnly fallback={<FallBack />}>
         {() => {
           return (
