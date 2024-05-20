@@ -1,35 +1,49 @@
 import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import NylasCustomScheduler from "~/components/scheduler";
+import NylasCustomScheduler, {
+  SchedulerCustomQueryParams,
+} from "~/components/scheduler";
 import sessionServer from "~/models/nylas/session.server";
+import { parseQueryParams } from "~/models/utils/utils.server";
 
 type LoaderData = {
   configurationId: string;
   sessionId: string;
-}
+  bookingInfo: SchedulerCustomQueryParams;
+};
 
-export async function loader({ params }: LoaderFunctionArgs) {
-  const configurationId = params.configId
+export async function loader({ params, request }: LoaderFunctionArgs) {
+  const configurationId = params.configId;
+
+  const url = new URL(request.url);
+
+  const bookingInfo = parseQueryParams<SchedulerCustomQueryParams>(
+    url.searchParams,
+    ["name", "email"]
+  );
 
   if (!configurationId) {
-    return redirect("/error")
+    return redirect("/error");
   }
 
   const sessionId = await sessionServer.createSchedulerSession({
     configurationId,
-    ttl:30
-  })
+    ttl: 30,
+  });
   return json({
     configurationId,
-    sessionId
-  })
+    sessionId,
+    bookingInfo,
+  });
 }
 export default function Scheduler() {
-  const {configurationId,sessionId} = useLoaderData<LoaderData>();
+  const { configurationId, sessionId, bookingInfo } =
+    useLoaderData<LoaderData>();
   return (
     <NylasCustomScheduler
       configId={configurationId ?? ""}
-      sessionId ={sessionId}
+      sessionId={sessionId}
+      queryParams={bookingInfo}
     />
-  )
+  );
 }
