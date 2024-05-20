@@ -2,8 +2,12 @@
 Nylas scheduling shadow parts
 */
 
+:root {
+  --theme-color: green;
+}
+
 nylas-scheduling::part(ndp__date--selected) {
-  background: green;
+  background: var(--theme-color);
 }
 
 nylas-scheduling::part(ndp__date) {
@@ -11,21 +15,21 @@ nylas-scheduling::part(ndp__date) {
 }
 
 nylas-scheduling::part(nbf__button-primary) {
-  background: green;
+  background: var(--theme-color);
   color: white;
 }
 
 nylas-scheduling::part(ntp__button-primary) {
-  background: green;
+  background: var(--theme-color);
   color: white;
 }
 
 nylas-scheduling::part(ntp__timeslot) {
-  background: green;
+  background: var(--theme-color);
   color: white;
 }
 
 nylas-scheduling .timeslot-picker-cta-label {
-  background: green;
+  background: var(--theme-color);
   color: white;
 }

@@ -40,12 +40,16 @@ export function convertBookingRef(compactString: string) {
   return [uuid1, uuid2];
 }
 
+type StringKeys<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+
 export function parseQueryParams<T extends object>(
   searchParams: URLSearchParams,
-  keys: string[]
+  keys: StringKeys<T>[]
 ): T {
-  return keys.reduce((acc: object, currKey: string) => {
-    const value = searchParams.get(currKey);
+  return keys.reduce((acc: object, currKey: StringKeys<T>) => {
+    const value = searchParams.get(currKey as string);
     if (value) {
       return {
         ...acc,
