@@ -1,0 +1,22 @@
+/*
+Nylas scheduling shadow parts
+*/
+
+nylas-scheduling::part(ndp__date--selected) {
+  background: green;
+}
+
+nylas-scheduling::part(nbf__button-primary) {
+  background: green;
+  color: white;
+}
+
+nylas-scheduling::part(ntp__timeslot) {
+  background: green;
+  color: white;
+}
+
+nylas-scheduling .timeslot-picker-cta-label {
+  background: green;
+  color: white;
+}
