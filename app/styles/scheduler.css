@@ -6,7 +6,16 @@ nylas-scheduling::part(ndp__date--selected) {
   background: green;
 }
 
+nylas-scheduling::part(ndp__date) {
+  border-radius: 15px;
+}
+
 nylas-scheduling::part(nbf__button-primary) {
+  background: green;
+  color: white;
+}
+
+nylas-scheduling::part(ntp__button-primary) {
   background: green;
   color: white;
 }

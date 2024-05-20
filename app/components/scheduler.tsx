@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import FallBack from "./fallback";
 import Scheduler from "./nylas-react.client";
@@ -48,19 +49,7 @@ export default function NylasCustomScheduler({
       console.log("BookingID", event.detail.bookingId);
   };
 
-  const props = () => {
-    if (sessionId) {
-      return {
-        sessionId,
-      };
-    }
-
-    return {
-      configurationId: configId,
-    };
-  };
-
-  const bookingInfo = () => {
+  const bookingInfo = useCallback(() => {
     if (cancelFlow || !queryParams) {
       return undefined;
     }
@@ -75,14 +64,27 @@ export default function NylasCustomScheduler({
         },
       };
     }
-  };
+  }, [cancelFlow, queryParams]);
+
+  const props = useMemo(() => {
+    if (sessionId) {
+      return {
+        sessionId,
+      };
+    }
+
+    return {
+      configurationId: configId,
+      bookingInfo: bookingInfo(),
+    };
+  }, [sessionId, bookingInfo, configId]);
+
   return (
     <div className=" m-auto flex items-center justify-center">
       <ClientOnly fallback={<FallBack />}>
         {() => {
           return (
             <Scheduler.NylasScheduling
-              bookingInfo={bookingInfo()}
               schedulerApiUrl="https://api.us.nylas.com/v3"
               nylasBranding={false}
               onBookingRefExtracted={onBookingRefExtracted}
@@ -94,7 +96,7 @@ export default function NylasCustomScheduler({
               }}
               {...(cancelFlow && { cancelBookingRef: bookingId })}
               {...(rescheduleFlow && { rescheduleBookingRef: bookingId })}
-              {...props()}
+              {...props}
             />
           );
         }}
