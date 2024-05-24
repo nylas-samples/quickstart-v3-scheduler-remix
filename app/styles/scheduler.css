@@ -1,0 +1,44 @@
+/*
+Nylas scheduling shadow parts
+*/
+
+:root {
+  --theme-color: green;
+}
+
+nylas-scheduling::part(ndp__date--selected) {
+  background: var(--theme-color);
+}
+
+nylas-scheduling::part(ndp__date) {
+  border-radius: 15px;
+}
+
+nylas-scheduling::part(ndp__date) {
+  border-radius: 15px;
+}
+
+nylas-scheduling::part(nbf__button-primary) {
+  background: var(--theme-color);
+  color: white;
+}
+
+nylas-scheduling::part(ntp__button-primary) {
+  background: var(--theme-color);
+  color: white;
+}
+
+nylas-scheduling::part(ntp__button-primary) {
+  background: green;
+  color: white;
+}
+
+nylas-scheduling::part(ntp__timeslot) {
+  background: var(--theme-color);
+  color: white;
+}
+
+nylas-scheduling .timeslot-picker-cta-label {
+  background: var(--theme-color);
+  color: white;
+}

@@ -1,18 +1,36 @@
+import { useMemo } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import FallBack from "./fallback";
 import Scheduler from "./nylas-react.client";
 
-interface EditorProps {
+type EditorProps = {
   nylasClientId: string;
   domain?: string;
-}
+  queryParams?: {
+    configurationId: string;
+  };
+};
+
+export type EditorQueryParams = {
+  configurationId: string;
+};
 
 export default function NylasSchedulerEditor({
   nylasClientId,
   domain,
+  queryParams,
 }: EditorProps) {
+  const props = useMemo(() => {
+    if (!queryParams) {
+      return undefined;
+    }
+
+    return {
+      configurationId: queryParams.configurationId,
+    };
+  }, []);
   return (
-    <div className=" m-auto flex items-center justify-center">
+    <div className=" m-auto flex items-center justify-center h-full">
       <ClientOnly fallback={<FallBack />}>
         {() => {
           return (
@@ -63,6 +81,7 @@ export default function NylasSchedulerEditor({
                   },
                 },
               }}
+              {...props}
             ></Scheduler.NylasSchedulerEditor>
           );
         }}

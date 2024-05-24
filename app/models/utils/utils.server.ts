@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { snakeCase } from "change-case/keys";
 
+/**
+ * Tool to convert the JS objects to snakeCase for API[configId,bookingId]
+ * @param object
+ * @returns keys transformed to snakeCase
+ */
+
 export function transformToSnakeCase(object: any) {
   return snakeCase(object);
 }
@@ -32,4 +38,24 @@ export function convertBookingRef(compactString: string) {
   const uuid2 = bufferToUUID(uuidBytes2);
 
   return [uuid1, uuid2];
+}
+
+type StringKeys<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+
+export function parseQueryParams<T extends object>(
+  searchParams: URLSearchParams,
+  keys: StringKeys<T>[]
+): T {
+  return keys.reduce((acc: object, currKey: StringKeys<T>) => {
+    const value = searchParams.get(currKey as string);
+    if (value) {
+      return {
+        ...acc,
+        [currKey]: value,
+      };
+    }
+    return acc;
+  }, {}) as T;
 }

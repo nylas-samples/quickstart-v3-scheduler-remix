@@ -1,33 +1,26 @@
+import { useCallback, useMemo } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import FallBack from "./fallback";
 import Scheduler from "./nylas-react.client";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const THEME = {
-  "--nylas-primary": "",
-  "--nylas-info": "",
-  "--nylas-success": "",
-  "--nylas-warning": "",
-  "--nylas-error": "",
-  "--nylas-error-pressed": "",
-  "--nylas-base-0": "#ebdbb0",
-  "--nylas-base-25": "#ebdbb0",
-  "--nylas-base-50": "#ebdbb0",
-  "--nylas-base-100": "#ebdbb0",
-  "--nylas-base-200": "#ebdbb0",
-  "--nylas-base-300": "#ebdbb0",
-  "--nylas-base-400": "#ebdbb0",
-  "--nylas-base-500": "#ebdbb0",
-  "--nylas-base-600": "#ebdbb0",
-  "--nylas-base-700": "#ebdbb0",
-  "--nylas-base-800": "#ebdbb0",
-  "--nylas-base-900": "#ebdbb0",
-  "--nylas-base-950": "#ebdbb0",
-  "--nylas-font-family": "",
-  "--nylas-font-size": "",
-  "--nylas-border-radius": "10px",
-  "--nylas-border-radius-2x": "10px",
-  "--nylas-border-radius-3x": "10px",
+interface CustomEvent<T = unknown> extends Event {
+  readonly detail: T;
+}
+
+type NylasSchedulingCustomEvent<T> = CustomEvent<T>;
+
+export type SchedulerCustomQueryParams = {
+  name: string;
+  email: string;
+};
+
+type NylasCustomSchedulerProps = {
+  configId: string;
+  bookingId?: string;
+  cancelFlow?: boolean;
+  rescheduleFlow?: boolean;
+  sessionId?: string;
+  queryParams?: SchedulerCustomQueryParams;
 };
 
 interface CustomEvent<T = unknown> extends Event {
@@ -42,13 +35,8 @@ export default function NylasCustomScheduler({
   cancelFlow = false,
   rescheduleFlow = false,
   sessionId,
-}: {
-  configId: string;
-  bookingId?: string;
-  cancelFlow?: boolean;
-  rescheduleFlow?: boolean;
-  sessionId?: string;
-}) {
+  queryParams,
+}: NylasCustomSchedulerProps) {
   const detailsConfirmed = async (e: CustomEvent) => {
     console.log("Booking made", e);
   };
@@ -67,7 +55,24 @@ export default function NylasCustomScheduler({
       console.log("BookingID", event.detail.bookingId);
   };
 
-  const props = () => {
+  const bookingInfo = useCallback(() => {
+    if (cancelFlow || !queryParams) {
+      return undefined;
+    }
+
+    const { name, email } = queryParams;
+
+    if (email && name) {
+      return {
+        primaryParticipant: {
+          name,
+          email,
+        },
+      };
+    }
+  }, [cancelFlow, queryParams]);
+
+  const props = useMemo(() => {
     if (sessionId) {
       return {
         sessionId,
@@ -76,18 +81,16 @@ export default function NylasCustomScheduler({
 
     return {
       configurationId: configId,
+      bookingInfo: bookingInfo(),
     };
-  };
+  }, [sessionId, bookingInfo, configId]);
+
   return (
-    <div className=" m-auto flex items-center justify-center">
+    <div className=" m-auto flex h-full items-center justify-center">
       <ClientOnly fallback={<FallBack />}>
         {() => {
           return (
             <Scheduler.NylasScheduling
-              themeConfig={{
-                "--nylas-primary": "#ebdbb0",
-                "--nylas-base-900": "#ebdbb0",
-              }}
               schedulerApiUrl="https://api.us.nylas.com/v3"
               nylasBranding={false}
               onBookingRefExtracted={onBookingRefExtracted}
@@ -99,7 +102,7 @@ export default function NylasCustomScheduler({
               }}
               {...(cancelFlow && { cancelBookingRef: bookingId })}
               {...(rescheduleFlow && { rescheduleBookingRef: bookingId })}
-              {...props()}
+              {...props}
             />
           );
         }}
