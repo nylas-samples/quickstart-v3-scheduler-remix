@@ -23,6 +23,12 @@ type NylasCustomSchedulerProps = {
   queryParams?: SchedulerCustomQueryParams;
 };
 
+interface CustomEvent<T = unknown> extends Event {
+  readonly detail: T;
+}
+
+type NylasSchedulingCustomEvent<T> = CustomEvent<T>;
+
 export default function NylasCustomScheduler({
   configId,
   bookingId = "",
@@ -70,6 +76,7 @@ export default function NylasCustomScheduler({
     if (sessionId) {
       return {
         sessionId,
+        bookingInfo: bookingInfo(),
       };
     }
 

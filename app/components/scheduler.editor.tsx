@@ -44,6 +44,7 @@ export default function NylasSchedulerEditor({
                 },
                 schedulerConfigChanged: async (e) => {
                   console.log("Page changed", e);
+                  console.log(e.detail.config.id);
                   //check for e.detail.id if it's present then it's saveChanges otherwise the page hasn't been created yet
                 },
                 deleteButtonClick: async (e) => {
