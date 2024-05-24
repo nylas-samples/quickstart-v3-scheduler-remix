@@ -76,6 +76,7 @@ export default function NylasCustomScheduler({
     if (sessionId) {
       return {
         sessionId,
+        bookingInfo: bookingInfo(),
       };
     }
 

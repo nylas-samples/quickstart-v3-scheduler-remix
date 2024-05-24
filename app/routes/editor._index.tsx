@@ -8,8 +8,8 @@ import { parseQueryParams } from "~/models/utils/utils.server";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Nylas v3 Scheduler" },
+    { name: "description", content: "V3 Scheduler" },
   ];
 };
 
