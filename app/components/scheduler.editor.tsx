@@ -36,10 +36,10 @@ export default function NylasSchedulerEditor({
           return (
             <Scheduler.NylasSchedulerEditor
               eventOverrides={{
-                createButtonClick: async (e) => {
+                createButtonClick: async (e: unknown) => {
                   console.log("Page created", e);
                 },
-                editButtonClick: async (e) => {
+                editButtonClick: async (e: unknown) => {
                   console.log("Page Edited", e);
                 },
                 schedulerConfigChanged: async (e) => {
