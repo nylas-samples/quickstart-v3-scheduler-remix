@@ -36,18 +36,13 @@ export default function NylasSchedulerEditor({
           return (
             <Scheduler.NylasSchedulerEditor
               eventOverrides={{
-                createButtonClick: async (e) => {
+                createButtonClick: async (e: unknown) => {
                   console.log("Page created", e);
                 },
-                editButtonClick: async (e) => {
+                editButtonClick: async (e: unknown) => {
                   console.log("Page Edited", e);
                 },
-                schedulerConfigChanged: async (e) => {
-                  console.log("Page changed", e);
-                  console.log(e.detail.config.id);
-                  //check for e.detail.id if it's present then it's saveChanges otherwise the page hasn't been created yet
-                },
-                deleteButtonClick: async (e) => {
+                deleteButtonClick: async (e: unknown) => {
                   console.log("Page deleted", e);
                 },
               }}

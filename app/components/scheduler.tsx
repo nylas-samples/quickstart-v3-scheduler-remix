@@ -27,8 +27,6 @@ interface CustomEvent<T = unknown> extends Event {
   readonly detail: T;
 }
 
-type NylasSchedulingCustomEvent<T> = CustomEvent<T>;
-
 export default function NylasCustomScheduler({
   configId,
   bookingId = "",
@@ -37,12 +35,11 @@ export default function NylasCustomScheduler({
   sessionId,
   queryParams,
 }: NylasCustomSchedulerProps) {
-  const detailsConfirmed = async (e: CustomEvent) => {
-    console.log("Booking made", e);
-  };
+  const commonEventHander = async (e: CustomEvent, connector?: unknown) => {
+    e.preventDefault();
 
-  const commonEventHander = async (e: CustomEvent) => {
     console.log("Any event", e);
+    console.log("connector", connector);
   };
 
   const onBookingRefExtracted = (
@@ -96,15 +93,17 @@ export default function NylasCustomScheduler({
               nylasBranding={false}
               onBookingRefExtracted={onBookingRefExtracted}
               eventOverrides={{
-                detailsConfirmed,
-                bookingInfo: detailsConfirmed,
-                nameChanged: commonEventHander,
-                emailChanged: commonEventHander,
+                detailsConfirmed: commonEventHander,
+                bookingInfo: commonEventHander,
+                //bookingFormSubmitted: commonEventHander,
+              }}
+              onBookedEventInfo={(event: CustomEvent) => {
+                console.log(event);
               }}
               {...(cancelFlow && { cancelBookingRef: bookingId })}
               {...(rescheduleFlow && { rescheduleBookingRef: bookingId })}
               {...props}
-            />
+            ></Scheduler.NylasScheduling>
           );
         }}
       </ClientOnly>

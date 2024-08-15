@@ -14,10 +14,6 @@ nylas-scheduling::part(ndp__date) {
   border-radius: 15px;
 }
 
-nylas-scheduling::part(ndp__date) {
-  border-radius: 15px;
-}
-
 nylas-scheduling::part(nbf__button-primary) {
   background: var(--theme-color);
   color: white;
@@ -36,6 +32,29 @@ nylas-scheduling::part(ntp__button-primary) {
 nylas-scheduling::part(ntp__timeslot) {
   background: var(--theme-color);
   color: white;
+}
+
+nylas-scheduling::part(ndp__date--disabled) {
+  background: black;
+}
+
+nylas-scheduling::part(ndp__title) + h1 {
+  font-family: "Arial", sans-serif; /* Choose a clean, modern font */
+  font-size: 2em; /* Increase font size */
+  font-weight: bold; /* Make the text bold */
+  color: #fff; /* Base text color */
+  background: linear-gradient(
+    45deg,
+    #ff6b6b,
+    #f06595,
+    #f9ca24,
+    #ff7979
+  ); /* Gradient background */
+  background-clip: text; /* Clip the background to the text */
+  -webkit-background-clip: text; /* Clip the background to the text for WebKit browsers */
+  -webkit-text-fill-color: transparent; /* Make text fill transparent for WebKit browsers */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+  transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
 }
 
 nylas-scheduling .timeslot-picker-cta-label {
