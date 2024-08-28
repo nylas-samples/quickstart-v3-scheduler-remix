@@ -74,7 +74,6 @@ export default function NylasCustomScheduler({
       return {
         sessionId,
         bookingInfo: bookingInfo(),
-        bookingInfo: bookingInfo(),
       };
     }
 
