@@ -100,7 +100,7 @@ export class CustomIdentityRequestWrapperProxy {
     this.name = config.name;
     this.email = config.email;
     //TODO Change this
-    this.domain = "http://localhost:5173";
+    this.domain = config.domain;
   }
   async request<T = any>(args: any): Promise<T> {
     try {
