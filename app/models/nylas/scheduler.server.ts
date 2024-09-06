@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { logger } from "~/logger.server";
 import { ApiService, AuthTypes } from "../api.server";
 import configServer from "../config.server";
@@ -13,6 +14,39 @@ type SessionResponse = {
 };
 
 const API_ENDPOINT = `${configServer.API_ENDPOINT}/scheduling/sessions`;
+
+const schedulerMiddleWare = async (args: any) => {
+  try {
+    logger.info({ args });
+    const response = await fetch(
+      `${configServer.API_ENDPOINT}/grants/${args.grantId}/${args.path}`,
+      {
+        method: args.method,
+        headers: {
+          ...args.headers,
+          Authorization: `Bearer ${configServer.NYLAS_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(args.payload),
+      }
+    );
+
+    // Check if the response is not okay (e.g., 404, 500)
+    if (!response.ok) {
+      console.error(`Error: ${response.status} ${response.statusText}`);
+      return {
+        error: `Error: ${response.status} ${response.statusText}`,
+      } as any;
+    }
+
+    // Parse the response
+    const data = await response.json();
+    return data as any;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return { error: "Error" } as any;
+  }
+};
 
 const createSchedulerSession = async (sessionPayload: SessionRequest) => {
   const body = transformToSnakeCase(sessionPayload) as BodyInit;
@@ -55,4 +89,5 @@ const deleteSession = async (sessionId: string) => {
 export default {
   createSchedulerSession,
   deleteSession,
+  schedulerMiddleWare,
 };

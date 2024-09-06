@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { snakeCase } from "change-case/keys";
+import { camelCase, snakeCase } from "change-case/keys";
 
 /**
  * Tool to convert the JS objects to snakeCase for API[configId,bookingId]
@@ -9,6 +9,9 @@ import { snakeCase } from "change-case/keys";
 
 export function transformToSnakeCase(object: any) {
   return snakeCase(object);
+}
+export function transformToCamelCase(object: any) {
+  return camelCase(object);
 }
 
 /**
@@ -58,4 +61,10 @@ export function parseQueryParams<T extends object>(
     }
     return acc;
   }, {}) as T;
+}
+
+export function generateQueryString(queryParams: object) {
+  return Object.entries(queryParams)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
 }

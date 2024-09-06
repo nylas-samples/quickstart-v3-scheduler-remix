@@ -154,6 +154,7 @@ export class ApiService {
   }
 
   static addAuth(request: APIRequest, token?: string) {
+    logger.info(request);
     const requestCopy = { ...request };
     if (!requestCopy.config) return requestCopy;
     switch (request.authType) {
