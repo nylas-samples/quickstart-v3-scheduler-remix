@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import FallBack from "./fallback";
 import Scheduler from "./nylas-react.client";
-import { CustomIdentityRequestWrapperProxy } from "./scheduler.identity";
 
 type EditorProps = {
   nylasClientId: string;
@@ -87,12 +86,8 @@ export default function NylasSchedulerEditor({
                 accessType: "offline",
               }}
               // nylasApiRequest={
-              //   new CustomIdentityRequestWrapper({
-              //     accessToken:
-              //       "{{Access Token}}",
-              //     provider: "",
+              //   new CustomIdentityRequestWrapperProxy({
               //     email: "{{GRANT_EMAIL}}",
-              //     name: "",
               //     grantId:
               //       "{{GRANT_ID}}",
               //   })
