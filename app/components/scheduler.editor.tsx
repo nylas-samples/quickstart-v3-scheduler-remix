@@ -86,15 +86,17 @@ export default function NylasSchedulerEditor({
                 hosted: true,
                 accessType: "offline",
               }}
-              nylasApiRequest={
-                new CustomIdentityRequestWrapperProxy({
-                  provider: "{PROVIDER_OPTIONAL}",
-                  email: "{{EMAIL}}",
-                  name: "{{GRANT_NAME_OPTIONAL}",
-                  grantId: "{GRANT_ID}",
-                  domain: `${window.location.origin}`,
-                })
-              }
+              // nylasApiRequest={
+              //   new CustomIdentityRequestWrapper({
+              //     accessToken:
+              //       "{{Access Token}}",
+              //     provider: "",
+              //     email: "{{GRANT_EMAIL}}",
+              //     name: "",
+              //     grantId:
+              //       "{{GRANT_ID}}",
+              //   })
+              // }
               defaultSchedulerConfigState={{
                 selectedConfiguration: {
                   requires_session_auth: false,
