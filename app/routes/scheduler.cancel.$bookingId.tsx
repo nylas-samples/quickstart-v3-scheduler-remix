@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect, useLoaderData } from "@remix-run/react";
 import NylasCustomScheduler from "~/components/scheduler";
-import sessionServer from "~/models/nylas/session.server";
+import sessionServer from "~/models/nylas/scheduler.server";
 import { convertBookingRef } from "~/models/utils/utils.server";
 
 type LoaderData = {

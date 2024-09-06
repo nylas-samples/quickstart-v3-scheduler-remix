@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import NylasCustomScheduler, {
   SchedulerCustomQueryParams,
 } from "~/components/scheduler";
-import sessionServer from "~/models/nylas/session.server";
+import sessionServer from "~/models/nylas/scheduler.server";
 import { parseQueryParams } from "~/models/utils/utils.server";
 
 type LoaderData = {

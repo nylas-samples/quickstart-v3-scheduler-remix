@@ -24,7 +24,13 @@ export default function Home() {
               to="/editor"
               className="inline-block rounded bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus:ring focus:ring-yellow-400"
             >
-              Get Started Today
+              Standard Editor
+            </Link>
+            <Link
+              to="/auth"
+              className="inline-block rounded bg-blue-600 px-12 py-3 ml-3 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus:ring focus:ring-yellow-400"
+            >
+              Access Token
             </Link>
           </div>
 
