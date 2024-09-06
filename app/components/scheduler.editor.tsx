@@ -88,8 +88,6 @@ export default function NylasSchedulerEditor({
               }}
               nylasApiRequest={
                 new CustomIdentityRequestWrapperProxy({
-                  accessToken:
-                    "KOsLtHQ2n-j2KYR8vC0fHoCuHpr1UolTq70nCjnkiYmsj3HBfE5sqb-D3E0-sIAFu_KED-n2C-xhRCLbOgOxeTVX3Y2SgmjF28yvSrJZhFRSPRUL15TmxAAvkrS4PInQt-JxwblynogprxvdV72Ac42rgw6eM4LR7N_kh6UFrhI",
                   provider: "google",
                   email: "kirantestnylas@gmail.com",
                   name: "Kiran Test6",
