@@ -88,10 +88,11 @@ export default function NylasSchedulerEditor({
               }}
               nylasApiRequest={
                 new CustomIdentityRequestWrapperProxy({
-                  provider: "google",
-                  email: "kirantestnylas@gmail.com",
-                  name: "Kiran Test6",
-                  grantId: "5c97f78a-923a-469a-b78f-96b33355ce1d",
+                  provider: "{PROVIDER_OPTIONAL}",
+                  email: "{{EMAIL}}",
+                  name: "{{GRANT_NAME_OPTIONAL}",
+                  grantId: "{GRANT_ID}",
+                  domain: `${window.location.origin}`,
                 })
               }
               defaultSchedulerConfigState={{

@@ -4,7 +4,7 @@ interface ICustomIdentityRequestWrapper {
   accessToken?: string;
   grantId: string;
   email: string;
-  provider: string;
+  provider?: string;
   name?: string;
   domain?: string;
 }
@@ -12,8 +12,8 @@ interface ICustomIdentityRequestWrapper {
 export class CustomIdentityRequestWrapperAccessToken {
   private accessToken: string | undefined;
   private grantId: string;
-  private provider: string;
   private email: string;
+  private provider: string | undefined;
   private name: string | undefined;
   private domain: string | undefined;
 
@@ -88,8 +88,8 @@ export class CustomIdentityRequestWrapperAccessToken {
 
 export class CustomIdentityRequestWrapperProxy {
   private grantId: string;
-  private provider: string;
   private email: string;
+  private provider: string | undefined;
   private name: string | undefined;
   private domain: string | undefined;
 
@@ -128,7 +128,6 @@ export class CustomIdentityRequestWrapperProxy {
 
       // Parse the response
       const data = await response.json();
-      console.log(data);
       return [data, null] as any;
     } catch (error) {
       console.error("Fetch error:", error);
