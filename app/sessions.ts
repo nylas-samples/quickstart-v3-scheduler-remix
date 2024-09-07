@@ -1,13 +1,12 @@
 // app/sessions.ts
 import { createCookieSessionStorage } from "@remix-run/node"; // or cloudflare/deno
 
-type SessionData = {
+export type SessionData = Partial<{
   grantId: string;
-  provider: string;
   email: string;
   accessToken: string;
   refreshToken: string;
-};
+}>;
 
 type SessionFlashData = {
   error: string;
@@ -25,6 +24,17 @@ const setSession = async (payload: any) => {
   return session;
 };
 
+const getSessionValues = async (request: Request) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  const grantId = session.get("grantId");
+  const accessToken = session.get("accessToken");
+  const email = session.get("email");
+  const refreshToken = session.get("refreshToken");
+
+  return { grantId, accessToken, email, refreshToken };
+};
+
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage<SessionData, SessionFlashData>({
     // a Cookie from `createCookie` or the CookieOptions to create one
@@ -32,7 +42,6 @@ const { getSession, commitSession, destroySession } =
       name: "__session",
 
       // all of these are optional
-      domain: "remix.run",
       // Expires can also be set (although maxAge overrides it when used in combination).
       // Note that this method is NOT recommended as `new Date` creates only one date on each server deployment, not a dynamic date in the future!
       //
@@ -46,4 +55,10 @@ const { getSession, commitSession, destroySession } =
     },
   });
 
-export { commitSession, destroySession, getSession, setSession };
+export {
+  commitSession,
+  destroySession,
+  getSession,
+  getSessionValues,
+  setSession,
+};

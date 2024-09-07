@@ -4,8 +4,6 @@ interface ICustomIdentityRequestWrapper {
   accessToken?: string;
   grantId: string;
   email: string;
-  provider?: string;
-  name?: string;
   domain?: string;
 }
 
@@ -13,16 +11,12 @@ export class CustomIdentityRequestWrapperAccessToken {
   private accessToken: string | undefined;
   private grantId: string;
   private email: string;
-  private provider: string | undefined;
-  private name: string | undefined;
   private domain: string | undefined;
 
   constructor(config: ICustomIdentityRequestWrapper) {
     // Initialize the class
     this.accessToken = config.accessToken;
     this.grantId = config.grantId;
-    this.provider = config.provider;
-    this.name = config.name;
     this.email = config.email;
     this.domain = config.domain || "https://api.us.nylas.com/v3";
   }
@@ -64,8 +58,6 @@ export class CustomIdentityRequestWrapperAccessToken {
     return {
       id: this.grantId,
       email: this.email,
-      name: this.name,
-      provider: this.provider,
     };
   }
 
@@ -96,10 +88,7 @@ export class CustomIdentityRequestWrapperProxy {
   constructor(config: ICustomIdentityRequestWrapper) {
     // Initialize the class
     this.grantId = config.grantId;
-    this.provider = config.provider;
-    this.name = config.name;
     this.email = config.email;
-    //TODO Change this
     this.domain = config.domain;
   }
   async request<T = any>(args: any): Promise<T> {
@@ -144,8 +133,6 @@ export class CustomIdentityRequestWrapperProxy {
     return {
       id: this.grantId,
       email: this.email,
-      name: this.name,
-      provider: this.provider,
     };
   }
 

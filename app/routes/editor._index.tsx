@@ -1,10 +1,12 @@
-import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/node";
+import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import NylasSchedulerEditor, {
+  AccessType,
   EditorQueryParams,
 } from "~/components/scheduler.editor";
 import configServer from "~/models/config.server";
 import { parseQueryParams } from "~/models/utils/utils.server";
+import { getSessionValues, SessionData } from "~/sessions";
 
 export const meta: MetaFunction = () => {
   return [
@@ -17,6 +19,8 @@ type LoaderData = {
   nylasClientId: string;
   domain: string;
   editorQueryParams: EditorQueryParams;
+  userCreds?: SessionData;
+  origin?: string;
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -24,16 +28,39 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const editorQueryParams = parseQueryParams<EditorQueryParams>(
     url.searchParams,
-    ["configurationId"]
+    ["configurationId", "accessType", "configurationId", "email", "grantId"]
   );
+
+  let userCreds: LoaderData["userCreds"] = undefined;
+  let origin = undefined;
+
+  if (editorQueryParams.accessType === AccessType.ACCESS_TOKEN) {
+    const session = await getSessionValues(request);
+    console.log(session);
+    userCreds = session;
+  }
+
+  if (
+    editorQueryParams.accessType === AccessType.NONE &&
+    editorQueryParams.email &&
+    editorQueryParams.grantId
+  ) {
+    userCreds = {
+      email: editorQueryParams.email,
+      grantId: editorQueryParams.grantId,
+    };
+    origin = configServer.ORIGIN;
+  }
   return json({
     nylasClientId: configServer.NYLAS_CLIENT_ID,
     domain: configServer.API_ENDPOINT,
     editorQueryParams,
+    userCreds,
+    origin,
   });
 }
 export default function Scheduler() {
-  const { nylasClientId, domain, editorQueryParams } =
+  const { nylasClientId, domain, editorQueryParams, userCreds, origin } =
     useLoaderData<LoaderData>();
 
   return (
@@ -41,6 +68,8 @@ export default function Scheduler() {
       nylasClientId={nylasClientId}
       domain={domain}
       queryParams={editorQueryParams}
+      userCreds={userCreds}
+      origin={origin}
     />
   );
 }
