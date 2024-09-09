@@ -5,13 +5,16 @@
 ## Development
 
 - Add environment variable to your project
-    - ```shellscript
-        NYLAS_CLIENT_ID= 
-        NYLAS_API_KEY=
-        API_ENDPOINT=https://api.us.nylas.com/v3
-        ```
+  - ```shellscript
+      NYLAS_CLIENT_ID=
+      NYLAS_API_KEY=
+      API_ENDPOINT=https://api.us.nylas.com/v3
+      AUTH_REDIRECT_URI=http://localhost:5173/callback
+      #this value has to be the host where this application is running
+      ORIGIN=http://localhost:5173
+    ```
 - Add redirect_uri as `JavaScript` to your Nylas application
-    - `http://localhost:{port}/editor`
+  - `http://localhost:{port}/editor`
 
 Run the Vite dev server:
 
@@ -22,6 +25,16 @@ npm install
 ```shellscript
 npm run dev
 ```
+
+## Overview
+
+v3-scheduler repository is a sample reposiroty to test scheduler editor and NylasSchedulingComponent
+
+It supports
+
+- Standard Editor Flow: Requires the user to re-authenticate.
+- Access Token Flow: The user has previously authenticated within the same origin and has an access token associated with that origin.
+- No Auth Flow: If an account has been authenticated previously, you can use the editor without re-authentication.
 
 ## Deployment
 
