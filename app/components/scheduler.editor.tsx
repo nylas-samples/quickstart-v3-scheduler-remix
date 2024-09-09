@@ -1,19 +1,34 @@
 import { useMemo, useState } from "react";
 import { ClientOnly } from "remix-utils/client-only";
+import { SessionData } from "~/sessions";
 import FallBack from "./fallback";
 import Scheduler from "./nylas-react.client";
-import { CustomIdentityRequestWrapperProxy } from "./scheduler.identity";
+import {
+  CustomIdentityRequestWrapperAccessToken,
+  CustomIdentityRequestWrapperProxy,
+} from "./scheduler.identity";
 
 type EditorProps = {
   nylasClientId: string;
   domain?: string;
   queryParams?: EditorQueryParams;
+  userCreds?: SessionData;
+  origin?: string;
 };
 
 export type EditorQueryParams = {
   configurationId: string;
   requiresSlug: boolean;
+  accessType: AccessType;
+  email: string;
+  grantId: string;
 };
+
+export enum AccessType {
+  STANDARD = "standard",
+  ACCESS_TOKEN = "accessToken",
+  NONE = "none",
+}
 
 /**
  *
@@ -33,6 +48,8 @@ export default function NylasSchedulerEditor({
   nylasClientId,
   domain,
   queryParams,
+  userCreds,
+  origin,
 }: EditorProps) {
   const [requiresSlug, setRequiresSlug] = useState(false);
 
@@ -43,16 +60,36 @@ export default function NylasSchedulerEditor({
 
     setRequiresSlug(queryParams.requiresSlug ?? false);
 
+    let nylasApiRequest = undefined;
+
+    if (queryParams.accessType === AccessType.ACCESS_TOKEN && userCreds) {
+      nylasApiRequest = new CustomIdentityRequestWrapperAccessToken({
+        accessToken: userCreds.accessToken,
+        email: userCreds?.email as string,
+        grantId: userCreds?.grantId as string,
+        domain,
+      });
+    }
+
+    if (queryParams.accessType === AccessType.NONE && userCreds) {
+      nylasApiRequest = new CustomIdentityRequestWrapperProxy({
+        email: userCreds?.email as string,
+        grantId: userCreds?.grantId as string,
+        domain: origin,
+      });
+    }
+
     return {
       configurationId: queryParams.configurationId,
       requiresSlug: queryParams.requiresSlug ?? false,
+      ...(nylasApiRequest && { nylasApiRequest }),
     };
   }, []);
 
   const schedulerPreviewLink = () => {
     return requiresSlug
       ? `https://book.nylas.com/us/${nylasClientId}/{slug}`
-      : `${window.location.origin}/scheduler/{config.id}`;
+      : `${origin}/scheduler/{config.id}`;
   };
 
   return (
@@ -81,25 +118,18 @@ export default function NylasSchedulerEditor({
               schedulerPreviewLink={schedulerPreviewLink()}
               nylasSessionsConfig={{
                 clientId: nylasClientId, // Replace with your Nylas client ID from the previous
-                redirectUri: `${window.location.origin}/editor`,
+                redirectUri: `${origin}/editor`,
                 domain: domain, // or 'https://api.eu.nylas.com/v3' for EU data center
                 hosted: true,
                 accessType: "offline",
               }}
-              nylasApiRequest={
-                new CustomIdentityRequestWrapperProxy({
-                  email: "kirantestnylas@gmail.com", // Email address,
-                  grantId: "5c97f78a-923a-469a-b78f-96b33355ce1d", // Sample Grant ID,
-                  domain: `${window.location.origin}`, // This would be the domain of your backend API
-                })
-              }
               defaultSchedulerConfigState={{
                 selectedConfiguration: {
                   requires_session_auth: false,
                   scheduler: {
                     // callback URLs to be set in email confirmation messages
-                    rescheduling_url: `${window.location.origin}/scheduler/reschedule/:booking_ref`,
-                    cancellation_url: `${window.location.origin}/scheduler/cancel/:booking_ref`,
+                    rescheduling_url: `${origin}/scheduler/reschedule/:booking_ref`,
+                    cancellation_url: `${origin}/scheduler/cancel/:booking_ref`,
                   },
                 },
               }}

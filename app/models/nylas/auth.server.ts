@@ -47,7 +47,7 @@ const codeExchangeRequest = async (
         body: JSON.stringify(transformToSnakeCase(codeExchangeBody)),
         headers: {
           "Content-Type": "application/json",
-          //   Origin: configServer.ORIGIN || "http://localhost:5173",
+          Origin: configServer.ORIGIN as string,
         },
       },
       authType: AuthTypes.NONE,

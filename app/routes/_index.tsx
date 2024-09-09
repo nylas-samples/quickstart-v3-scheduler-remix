@@ -32,6 +32,12 @@ export default function Home() {
             >
               Access Token
             </Link>
+            <Link
+              to="/editor?accessType=none"
+              className="inline-block rounded bg-blue-600 px-12 py-3 ml-3 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus:ring focus:ring-yellow-400"
+            >
+              No Auth
+            </Link>
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-8 md:grid-cols-2 sm:grid-cols-3">

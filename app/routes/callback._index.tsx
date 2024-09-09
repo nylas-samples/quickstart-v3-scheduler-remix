@@ -20,7 +20,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   session = await setSession(response);
 
   //set Access token and redirect to editor
-  return redirect("/editor?accessToken=true", {
+  return redirect("/editor?accessType=accessToken", {
     headers: {
       "Set-Cookie": await commitSession(session),
     },
