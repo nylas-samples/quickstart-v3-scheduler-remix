@@ -20,7 +20,7 @@ type LoaderData = {
   domain: string;
   editorQueryParams: EditorQueryParams;
   userCreds?: SessionData;
-  origin?: string;
+  origin: string;
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -32,11 +32,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   );
 
   let userCreds: LoaderData["userCreds"] = undefined;
-  let origin = undefined;
 
   if (editorQueryParams.accessType === AccessType.ACCESS_TOKEN) {
     const session = await getSessionValues(request);
-    console.log(session);
     userCreds = session;
   }
 
@@ -49,14 +47,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
       email: editorQueryParams.email,
       grantId: editorQueryParams.grantId,
     };
-    origin = configServer.ORIGIN;
   }
   return json({
     nylasClientId: configServer.NYLAS_CLIENT_ID,
     domain: configServer.API_ENDPOINT,
+    origin: configServer.ORIGIN,
     editorQueryParams,
     userCreds,
-    origin,
   });
 }
 export default function Scheduler() {

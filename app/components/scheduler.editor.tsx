@@ -89,7 +89,7 @@ export default function NylasSchedulerEditor({
   const schedulerPreviewLink = () => {
     return requiresSlug
       ? `https://book.nylas.com/us/${nylasClientId}/{slug}`
-      : `${window.location.origin}/scheduler/{config.id}`;
+      : `${origin}/scheduler/{config.id}`;
   };
 
   return (
@@ -118,7 +118,7 @@ export default function NylasSchedulerEditor({
               schedulerPreviewLink={schedulerPreviewLink()}
               nylasSessionsConfig={{
                 clientId: nylasClientId, // Replace with your Nylas client ID from the previous
-                redirectUri: `${window.location.origin}/editor`,
+                redirectUri: `${origin}/editor`,
                 domain: domain, // or 'https://api.eu.nylas.com/v3' for EU data center
                 hosted: true,
                 accessType: "offline",
@@ -128,8 +128,8 @@ export default function NylasSchedulerEditor({
                   requires_session_auth: false,
                   scheduler: {
                     // callback URLs to be set in email confirmation messages
-                    rescheduling_url: `${window.location.origin}/scheduler/reschedule/:booking_ref`,
-                    cancellation_url: `${window.location.origin}/scheduler/cancel/:booking_ref`,
+                    rescheduling_url: `${origin}/scheduler/reschedule/:booking_ref`,
+                    cancellation_url: `${origin}/scheduler/cancel/:booking_ref`,
                   },
                 },
               }}
