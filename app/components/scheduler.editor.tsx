@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import { SessionData } from "~/sessions";
 import FallBack from "./fallback";
@@ -51,7 +50,7 @@ export default function NylasSchedulerEditor({
   userCreds,
   origin,
 }: EditorProps) {
-  const props = useMemo(() => {
+  const props = () => {
     if (!queryParams) {
       return undefined;
     }
@@ -78,16 +77,17 @@ export default function NylasSchedulerEditor({
         domain: origin,
       });
     }
+    console.log(queryParams);
 
     return {
       configurationId: queryParams.configurationId,
-      requiresSlug: queryParams.requiresSlug ?? false,
+      requiresSlug: queryParams.requiresSlug || false,
       schedulerPreviewLink: queryParams.requiresSlug
         ? `https://book.nylas.com/us/${nylasClientId}/{slug}`
         : `${origin}/scheduler/{config.id}`,
       ...(nylasApiRequest && { nylasApiRequest }),
     };
-  }, []);
+  };
 
   return (
     <div className=" m-auto flex items-center justify-center h-full">
@@ -129,7 +129,7 @@ export default function NylasSchedulerEditor({
                   },
                 },
               }}
-              {...props}
+              {...props()}
             ></Scheduler.NylasSchedulerEditor>
           );
         }}

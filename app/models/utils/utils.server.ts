@@ -43,8 +43,10 @@ export function convertBookingRef(compactString: string) {
   return [uuid1, uuid2];
 }
 
+type StringOrBoolean = string | boolean;
+
 type StringKeys<T> = {
-  [K in keyof T]: T[K] extends string ? K : never;
+  [K in keyof T]: T[K] extends StringOrBoolean ? K : never;
 }[keyof T];
 
 export function parseQueryParams<T extends object>(
@@ -53,6 +55,12 @@ export function parseQueryParams<T extends object>(
 ): T {
   return keys.reduce((acc: object, currKey: StringKeys<T>) => {
     const value = searchParams.get(currKey as string);
+    if (value === "true" || value === "false") {
+      return {
+        ...acc,
+        [currKey]: value === "true",
+      };
+    }
     if (value) {
       return {
         ...acc,

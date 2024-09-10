@@ -33,7 +33,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const editorQueryParams = parseQueryParams<EditorQueryParams>(
     url.searchParams,
-    ["configurationId", "accessType", "configurationId", "email", "grantId"]
+    [
+      "configurationId",
+      "requiresSlug",
+      "accessType",
+      "configurationId",
+      "email",
+      "grantId",
+    ]
   );
 
   let userCreds: LoaderData["userCreds"] = undefined;
