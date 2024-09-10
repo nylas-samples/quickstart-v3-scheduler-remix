@@ -1,4 +1,9 @@
-import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import {
+  json,
+  LoaderFunctionArgs,
+  MetaFunction,
+  redirect,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import NylasSchedulerEditor, {
   AccessType,
@@ -35,6 +40,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (editorQueryParams.accessType === AccessType.ACCESS_TOKEN) {
     const session = await getSessionValues(request);
+
+    if (!session.accessToken) {
+      return redirect("/auth");
+    }
     userCreds = session;
   }
 

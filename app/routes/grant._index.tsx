@@ -2,6 +2,7 @@ import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { AccessType } from "~/components/scheduler.editor";
 import { generateQueryString } from "~/models/utils/utils.server";
+import { destroySession, getSession } from "~/sessions";
 
 // Server-side action to handle form data
 export async function action({ request }: ActionFunctionArgs) {
@@ -20,8 +21,14 @@ export async function action({ request }: ActionFunctionArgs) {
     accessType: AccessType.NONE,
   });
 
+  const session = await getSession(request.headers.get("Cookie"));
+
   // Handle form data here (e.g., save to database)
-  return redirect(`/editor?${queryString}`);
+  return redirect(`/editor?${queryString}`, {
+    headers: {
+      "Set-Cookie": await destroySession(session),
+    },
+  });
 }
 
 export default function GrantForm() {
