@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import { SessionData } from "~/sessions";
 import FallBack from "./fallback";
@@ -51,16 +51,16 @@ export default function NylasSchedulerEditor({
   userCreds,
   origin,
 }: EditorProps) {
-  const [requiresSlug, setRequiresSlug] = useState(false);
-
   const props = useMemo(() => {
     if (!queryParams) {
       return undefined;
     }
 
-    setRequiresSlug(queryParams.requiresSlug ?? false);
-
     let nylasApiRequest = undefined;
+
+    /**
+     * This will capture the editor Auth mode. If
+     */
 
     if (queryParams.accessType === AccessType.ACCESS_TOKEN && userCreds) {
       nylasApiRequest = new CustomIdentityRequestWrapperAccessToken({
@@ -82,15 +82,12 @@ export default function NylasSchedulerEditor({
     return {
       configurationId: queryParams.configurationId,
       requiresSlug: queryParams.requiresSlug ?? false,
+      schedulerPreviewLink: queryParams.requiresSlug
+        ? `https://book.nylas.com/us/${nylasClientId}/{slug}`
+        : `${origin}/scheduler/{config.id}`,
       ...(nylasApiRequest && { nylasApiRequest }),
     };
   }, []);
-
-  const schedulerPreviewLink = () => {
-    return requiresSlug
-      ? `https://book.nylas.com/us/${nylasClientId}/{slug}`
-      : `${origin}/scheduler/{config.id}`;
-  };
 
   return (
     <div className=" m-auto flex items-center justify-center h-full">
@@ -115,7 +112,6 @@ export default function NylasSchedulerEditor({
                 },
               }}
               mode="app"
-              schedulerPreviewLink={schedulerPreviewLink()}
               nylasSessionsConfig={{
                 clientId: nylasClientId, // Replace with your Nylas client ID from the previous
                 redirectUri: `${origin}/editor`,

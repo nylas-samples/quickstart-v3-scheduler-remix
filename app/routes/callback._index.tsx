@@ -8,8 +8,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   if (!code) {
-    //TODO redirect to a failed auth page
-    return null;
+    return redirect("/error");
   }
   const response = transformToCamelCase(
     await authServer.codeExchangeRequest(code)
