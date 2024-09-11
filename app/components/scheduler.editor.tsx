@@ -123,7 +123,7 @@ export default function NylasSchedulerEditor({
                 selectedConfiguration: {
                   requires_session_auth: false,
                   scheduler: {
-                    // callback URLs to be set in email confirmation messages
+                    // NOTE: Keep this path same for reschedule and cancel flow
                     rescheduling_url: `${origin}/scheduler/reschedule/:booking_ref`,
                     cancellation_url: `${origin}/scheduler/cancel/:booking_ref`,
                   },

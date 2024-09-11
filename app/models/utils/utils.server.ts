@@ -62,9 +62,10 @@ export function parseQueryParams<T extends object>(
       };
     }
     if (value) {
+      const parsedValues = value.split(",");
       return {
         ...acc,
-        [currKey]: value,
+        [currKey]: parsedValues.length > 1 ? parsedValues : value,
       };
     }
     return acc;
