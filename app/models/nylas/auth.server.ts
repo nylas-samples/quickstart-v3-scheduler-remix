@@ -16,11 +16,12 @@ type CodeExchangeRequest = Partial<{
 
 const API_ENDPOINT = `${configServer.API_ENDPOINT}/connect`;
 
-const generateAuthURL = () => {
+const generateAuthURL = (request: Request) => {
+  const url = new URL(request.url);
   const queryParams = {
     clientId: configServer.NYLAS_CLIENT_ID,
     responseType: "code",
-    redirectUri: configServer.AUTH_REDIRECT_URI,
+    redirectUri: `${url.origin}/callback`,
     accessType: "offline",
   };
   const queryString = generateQueryString(
@@ -29,16 +30,21 @@ const generateAuthURL = () => {
   return `${API_ENDPOINT}/auth?${queryString}`;
 };
 
-const codeExchangeRequest = async (
-  code: string,
-  grantType: "authorization_code" | "refresh_token" = "authorization_code"
-) => {
+const codeExchangeRequest = async ({
+  code,
+  origin,
+  grantType = "authorization_code",
+}: {
+  code: string;
+  grantType?: "authorization_code" | "refresh_token";
+  origin?: string;
+}) => {
   try {
     const codeExchangeBody: CodeExchangeRequest = {
       code,
       clientId: configServer.NYLAS_CLIENT_ID,
       clientSecret: configServer.NYLAS_API_KEY,
-      redirectUri: configServer.AUTH_REDIRECT_URI,
+      redirectUri: `${origin}/callback`,
       grantType: grantType,
     };
     const data = await ApiService.create({
@@ -47,7 +53,7 @@ const codeExchangeRequest = async (
         body: JSON.stringify(transformToSnakeCase(codeExchangeBody)),
         headers: {
           "Content-Type": "application/json",
-          Origin: configServer.ORIGIN as string,
+          ...(origin && { Origin: origin }),
         },
       },
       authType: AuthTypes.NONE,

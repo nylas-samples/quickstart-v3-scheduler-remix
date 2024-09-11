@@ -42,9 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       "grantId",
     ]
   );
-
   let userCreds: LoaderData["userCreds"] = undefined;
-
   if (editorQueryParams.accessType === AccessType.ACCESS_TOKEN) {
     const session = await getSessionValues(request);
 
@@ -54,20 +52,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     userCreds = session;
   }
 
-  if (
-    editorQueryParams.accessType === AccessType.NONE &&
-    editorQueryParams.email &&
-    editorQueryParams.grantId
-  ) {
+  if (editorQueryParams.accessType === AccessType.NONE) {
+    if (!editorQueryParams.email || !editorQueryParams.grantId) {
+      return redirect("/grant");
+    }
     userCreds = {
       email: editorQueryParams.email,
       grantId: editorQueryParams.grantId,
-    };
+    } as SessionData;
   }
+
   return json({
     nylasClientId: configServer.NYLAS_CLIENT_ID,
     domain: configServer.API_ENDPOINT,
-    origin: configServer.ORIGIN,
+    origin: url.origin,
     editorQueryParams,
     userCreds,
   });

@@ -11,7 +11,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     return redirect("/error");
   }
   const response = transformToCamelCase(
-    await authServer.codeExchangeRequest(code)
+    await authServer.codeExchangeRequest({ code, origin: url.origin })
   );
 
   let session = await getSession();

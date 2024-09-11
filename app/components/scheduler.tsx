@@ -21,6 +21,7 @@ type NylasCustomSchedulerProps = {
   rescheduleFlow?: boolean;
   sessionId?: string;
   queryParams?: SchedulerCustomQueryParams;
+  domain: string;
 };
 
 interface CustomEvent<T = unknown> extends Event {
@@ -34,6 +35,7 @@ export default function NylasCustomScheduler({
   rescheduleFlow = false,
   sessionId,
   queryParams,
+  domain,
 }: NylasCustomSchedulerProps) {
   const commonEventHander = async (e: CustomEvent, connector?: unknown) => {
     e.preventDefault();
@@ -89,7 +91,7 @@ export default function NylasCustomScheduler({
         {() => {
           return (
             <Scheduler.NylasScheduling
-              schedulerApiUrl="https://api.us.nylas.com/v3"
+              schedulerApiUrl={domain}
               nylasBranding={false}
               onBookingRefExtracted={onBookingRefExtracted}
               eventOverrides={{

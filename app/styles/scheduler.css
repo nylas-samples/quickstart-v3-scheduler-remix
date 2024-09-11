@@ -61,3 +61,8 @@ nylas-scheduling .timeslot-picker-cta-label {
   background: var(--theme-color);
   color: white;
 }
+
+/* hide the editor back button on configuration view  */
+nylas-scheduler-editor::part(editor__footer-cancel) {
+  display: none;
+}

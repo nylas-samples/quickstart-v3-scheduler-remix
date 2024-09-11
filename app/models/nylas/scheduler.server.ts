@@ -17,7 +17,7 @@ const API_ENDPOINT = `${configServer.API_ENDPOINT}/scheduling/sessions`;
 
 const schedulerMiddleWare = async (args: any): Promise<[any, number]> => {
   try {
-    logger.info({ args });
+    logger.info({ args }, "Scheduler proxy request");
     const response = await fetch(
       `${configServer.API_ENDPOINT}/grants/${args.grantId}/${args.path}`,
       {
@@ -32,9 +32,12 @@ const schedulerMiddleWare = async (args: any): Promise<[any, number]> => {
     );
 
     // Check if the response is not okay (e.g., 404, 500)
+    const data = await response.json();
     if (!response.ok) {
-      logger.error(`Error: ${response.status} ${response.statusText}`);
-      logger.info(await response.json());
+      logger.error(
+        { data },
+        `Error: ${response.status} ${response.statusText}`
+      );
       return [
         {
           error: `Error: ${response.status} ${response.statusText}`,
@@ -42,9 +45,6 @@ const schedulerMiddleWare = async (args: any): Promise<[any, number]> => {
         response.status,
       ] as any;
     }
-
-    // Parse the response
-    const data = await response.json();
     return [data, response.status] as any;
   } catch (error) {
     logger.error("Fetch error:", error);

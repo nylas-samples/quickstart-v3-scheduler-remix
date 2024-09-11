@@ -3,6 +3,4 @@ export default {
   NYLAS_API_KEY: process.env.NYLAS_API_KEY,
   API_ENDPOINT: process.env.API_ENDPOINT,
   NODE_ENV: process.env.NODE_ENV,
-  AUTH_REDIRECT_URI: process.env.AUTH_REDIRECT_URI,
-  ORIGIN: process.env.ORIGIN,
 };
