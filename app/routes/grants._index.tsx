@@ -1,9 +1,9 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { useState } from "react";
-import Pagination from "~/components/common/pagintation";
+import { Await, useLoaderData } from "@remix-run/react";
+import { Suspense } from "react";
+import FallBack from "~/components/fallback";
 import GrantListView from "~/components/grants";
-import { Grant } from "~/models/nylas/grant.server";
+import grantServer, { Grant } from "~/models/nylas/grant.server";
 import { parseQueryParams } from "~/models/utils/utils.server";
 
 type LoaderData = {
@@ -12,95 +12,7 @@ type LoaderData = {
   offset: number;
 };
 
-const defaultGrants = [
-  {
-    id: "db0b25ba-980a-4ad7-bab4-10d613ed1f65",
-    grantStatus: "valid",
-    provider: "ews",
-    scope: ["ews.calendars", "ews.messages", "ews.contacts"],
-    email: "alex.doe@nylas.org",
-    createdAt: 1724853528,
-    updatedAt: 1724853528,
-  },
-  {
-    id: "ed9ee6ec-ab69-4825-ae8f-bfcefafdbf77",
-    grantStatus: "valid",
-    provider: "ews",
-    scope: ["ews.calendars", "ews.messages", "ews.contacts"],
-    email: "test@nylas.info",
-    createdAt: 1724865480,
-    updatedAt: 1724865480,
-  },
-  {
-    id: "4e3889b5-4d39-4f61-a4f2-34684f30782a",
-    grantStatus: "valid",
-    provider: "imap",
-    scope: [
-      "openid",
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/calendar",
-    ],
-    state: "test",
-    email: "kirantestnylas1@gmail.com",
-    settings: {},
-    ip: "24.13.206.255",
-    userAgent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    createdAt: 1701721484,
-    updatedAt: 1724782700,
-    providerUserId: "102506000108868859977",
-  },
-  {
-    id: "5c97f78a-923a-469a-b78f-96b33355ce1d",
-    grantStatus: "valid",
-    provider: "google",
-    scope: [
-      "openid",
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/gmail.modify",
-      "https://www.googleapis.com/auth/calendar",
-      "https://www.googleapis.com/auth/contacts",
-      "https://www.googleapis.com/auth/contacts.other.readonly",
-    ],
-    email: "kirantestnylas@gmail.com",
-    settings: {},
-    ip: "24.13.206.255",
-    userAgent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    createdAt: 1722288474,
-    updatedAt: 1726080010,
-    providerUserId: "113771326161061481099",
-  },
-  {
-    id: "77c66b65-0f99-49a5-bfeb-f2df6808af0d",
-    grantStatus: "valid",
-    provider: "google",
-    scope: [
-      "openid",
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/gmail.modify",
-      "https://www.googleapis.com/auth/calendar",
-      "https://www.googleapis.com/auth/contacts",
-      "https://www.googleapis.com/auth/contacts.other.readonly",
-    ],
-    state: "Test",
-    email: "kirantestnylas5@gmail.com",
-    settings: {},
-    ip: "24.13.206.255",
-    userAgent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    createdAt: 1725888488,
-    updatedAt: 1725920672,
-    providerUserId: "104266501853936394636",
-  },
-];
-
 export async function loader({ request }: LoaderFunctionArgs) {
-  //TODO: Request Grants view and handle query params
-
   const url = new URL(request.url);
 
   let queryParams = {
@@ -119,47 +31,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     };
   }
 
-  //const grants = await grantServer.getGrants({ queryParams });
+  const grants = await grantServer.getGrants({ queryParams });
 
   return json({
-    grants: defaultGrants,
+    grants: grants,
     ...queryParams,
   });
 }
 
 export default function Grants() {
-  const { grants, limit, offset } = useLoaderData<LoaderData>();
-  const navigate = useNavigate();
-  const [paginationButtonState] = useState(() => {
-    if (!grants.length) {
-      return {
-        nextDisabled: offset > 0,
-        prevDisabled: offset <= 0,
-      };
-    }
-    if (offset <= 0) {
-      return {
-        nextDisabled: false,
-        prevDisabled: true,
-      };
-    }
-
-    return {
-      nextDisabled: false,
-      prevDisabled: false,
-    };
-  });
-
-  const handlePagination = (method: "prev" | "next") => {
-    if (method === "prev") {
-      const newOffset = offset - limit;
-      return navigate(`/grants?limit=${limit}&offset=${newOffset}`);
-    }
-
-    const newOffset = offset + limit;
-
-    return navigate(`/grants?limit=${limit}&offset=${newOffset}`);
-  };
+  const loaderData = useLoaderData<LoaderData>();
   return (
     <section className="dark:bg-gray-900">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
@@ -172,13 +53,14 @@ export default function Grants() {
         </main>
       </div>
       <div className=" m-auto flex flex-col h-full items-center justify-center">
-        <GrantListView grants={grants} />
+        <Suspense fallback={<FallBack />}>
+          <Await resolve={loaderData}>
+            {({ grants, limit, offset }) => (
+              <GrantListView grants={grants} limit={limit} offset={offset} />
+            )}
+          </Await>
+        </Suspense>
       </div>
-      <Pagination
-        handlePagination={handlePagination}
-        nextDisabled={paginationButtonState.nextDisabled}
-        prevDisabled={paginationButtonState.prevDisabled}
-      />
     </section>
   );
 }
