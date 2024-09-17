@@ -1,21 +1,18 @@
 import { Link, useNavigate } from "@remix-run/react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Grant } from "~/models/nylas/grant.server";
 import Pagination from "./common/pagintation";
 import { AccessType } from "./scheduler.editor";
 
 function GrantView({ grant }: { grant: Grant }) {
   const navigate = useNavigate();
-  const [buttonStatus] = useState<{
-    path: string;
-    buttonText: string;
-    disabled: boolean;
-  }>(() => {
+  const buttonStatus = useMemo(() => {
     if (grant.provider === "imap") {
       return {
         path: "/",
         buttonText: "Disabled",
         disabled: true,
+        buttonCSS: "disabled:bg-red-300 hover:bg-red-700",
       };
     }
     if (grant.grantStatus === "invalid") {
@@ -23,6 +20,7 @@ function GrantView({ grant }: { grant: Grant }) {
         path: "/auth",
         buttonText: "Reconnect",
         disabled: false,
+        buttonCSS: `bg-blue-600 hover:bg-blue-700`,
       };
     }
 
@@ -30,8 +28,9 @@ function GrantView({ grant }: { grant: Grant }) {
       path: `/editor?accessType=${AccessType.NONE}&email=${grant.email}&grantId=${grant.id}`,
       buttonText: "View Pages",
       disabled: false,
+      buttonCSS: `bg-blue-600 hover:bg-blue-700`,
     };
-  });
+  }, [grant]);
 
   return (
     <>
@@ -61,11 +60,7 @@ function GrantView({ grant }: { grant: Grant }) {
               return navigate(buttonStatus.path);
             }}
             disabled={buttonStatus.disabled}
-            className={`inline-block rounded px-4 py-2 text-xs font-medium text-white${
-              buttonStatus.disabled
-                ? "bg-red-300 hover:bg-red-700"
-                : " bg-blue-600 hover:bg-blue-700 "
-            }`}
+            className={`inline-block rounded px-4 py-2 text-xs font-medium text-white ${buttonStatus.buttonCSS}`}
           >
             {buttonStatus.buttonText}
           </button>
@@ -103,7 +98,7 @@ export default function GrantListView({
       nextDisabled: false,
       prevDisabled: false,
     };
-  }, [grants, offset]);
+  }, [grants, limit, offset]);
 
   const handlePagination = (method: "prev" | "next") => {
     if (method === "prev") {
@@ -115,6 +110,7 @@ export default function GrantListView({
 
     return navigate(`/grants?limit=${limit}&offset=${newOffset}`);
   };
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -138,17 +134,17 @@ export default function GrantListView({
           </thead>
 
           <tbody className="divide-y divide-gray-200">
-            {grants.length &&
+            {grants.length ? (
               grants.map((grant: Grant) => {
                 return <GrantView key={grant.id} grant={grant} />;
-              })}
-            {grants.length === 0 && (
+              })
+            ) : (
               <>
-                <div className="flex flex-1 items-center justify-center">
+                <div className="flex  m-auto items-center justify-center">
                   <div className="mx-auto max-w-xl px-4 py-8 text-center">
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                    <h3 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
                       No grants exist
-                    </h1>
+                    </h3>
 
                     <p className="mt-4 text-gray-500">
                       Try connecting a grant or return home to start from the

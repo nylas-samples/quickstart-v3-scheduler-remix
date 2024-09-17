@@ -3,14 +3,8 @@ import { Await, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
 import FallBack from "~/components/fallback";
 import GrantListView from "~/components/grants";
-import grantServer, { Grant } from "~/models/nylas/grant.server";
+import grantServer from "~/models/nylas/grant.server";
 import { parseQueryParams } from "~/models/utils/utils.server";
-
-type LoaderData = {
-  grants: Grant[];
-  limit: number;
-  offset: number;
-};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -40,7 +34,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Grants() {
-  const loaderData = useLoaderData<LoaderData>();
+  const { grants, limit, offset } = useLoaderData<typeof loader>();
   return (
     <section className="dark:bg-gray-900">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
@@ -54,9 +48,13 @@ export default function Grants() {
       </div>
       <div className=" m-auto flex flex-col h-full items-center justify-center">
         <Suspense fallback={<FallBack />}>
-          <Await resolve={loaderData}>
-            {({ grants, limit, offset }) => (
-              <GrantListView grants={grants} limit={limit} offset={offset} />
+          <Await resolve={grants}>
+            {(grants) => (
+              <GrantListView
+                grants={grants ?? []}
+                limit={limit}
+                offset={offset}
+              />
             )}
           </Await>
         </Suspense>
