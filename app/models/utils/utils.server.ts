@@ -65,7 +65,7 @@ export function parseQueryParams<T extends object>(
         [currKey]: value === "true",
       };
     }
-    if (!isNaN(Number(value))) {
+    if (value && !isNaN(Number(value))) {
       return {
         ...acc,
         [currKey]: Number(value),

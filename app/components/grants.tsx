@@ -60,7 +60,11 @@ function GrantView({ grant }: { grant: Grant }) {
               return navigate(buttonStatus.path);
             }}
             disabled={buttonStatus.disabled}
-            className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+            className={`inline-block rounded px-4 py-2 text-xs font-medium text-white${
+              buttonStatus.disabled
+                ? "bg-red-300 hover:bg-red-700"
+                : " bg-blue-600 hover:bg-blue-700 "
+            }`}
           >
             {buttonStatus.buttonText}
           </button>

@@ -34,7 +34,7 @@ const defaultGrants = [
   {
     id: "4e3889b5-4d39-4f61-a4f2-34684f30782a",
     grantStatus: "valid",
-    provider: "google",
+    provider: "imap",
     scope: [
       "openid",
       "https://www.googleapis.com/auth/userinfo.email",
