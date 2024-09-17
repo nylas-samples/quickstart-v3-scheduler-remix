@@ -58,7 +58,7 @@ export default function NylasSchedulerEditor({
     let nylasApiRequest = undefined;
 
     /**
-     * This will capture the editor Auth mode. If
+     * This will capture the editor Auth mode. When you pass in accessType=AccessType.ACCESS_TOKEN or accessType=AccessType.None it will create a CustomIdentityWrapper
      */
 
     if (queryParams.accessType === AccessType.ACCESS_TOKEN && userCreds) {
@@ -77,7 +77,6 @@ export default function NylasSchedulerEditor({
         domain: origin,
       });
     }
-    console.log(queryParams);
 
     return {
       configurationId: queryParams.configurationId,

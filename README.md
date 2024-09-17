@@ -71,17 +71,29 @@ export type SchedulerCustomQueryParams = {
 
 - Users will authenticate using OAuth within the same origin.
 - The flow conducts a code exchange and securely stores user credentials in server-side sessions via cookies.
+- The `nylasApiRequest` Editor prop and the `CustomIdentityRequestWrapperAccessToken` class is used to make scheduler requests on behalf of an already authenticated user.
 
-The `CustomIdentityRequestWrapperAccessToken` class is used to make scheduler requests on behalf of an already authenticated user.
-
-> 💡 **Note:** This is an important note.
-
-- This flow is applicable only if you are storing both the access_token and refresh_token associated with the origin where the component is embedded. It follows a similar approach to the one used by our Standard Editor flow.
+> 💡 **Note:**
+> This flow is applicable only if you are storing both the access_token and refresh_token associated with the origin where the component is embedded. It follows a similar approach to the one used by our Standard Editor flow.
 
 ## No Auth Flow
 
-- This flow utilizes the `CustomIdentityRequestWrapperProxy` class to proxy scheduler component requests to your backend.
+- This flow utilizes the `nylasApiRequest` Editor prop and the `CustomIdentityRequestWrapperProxy` class to proxy scheduler component requests to your backend.
 - It eliminates the need for user authentication to access the `NylasSchedulerEditor` component.
+
+### High Level (Request -> Response -> `NylasSchedulerEditor`)
+
+- Scheduler Editor: When the scheduler editor is embedded and loaded, it will request the user’s configurations.
+- Request Flow: This request hits the CustomIdentityRequestWrapperProxy's request method: [Link to method][1]
+  - This method sends a request to your backend with the path, grantId, request method, and body of the request that the scheduler is trying to make.
+- Backend Handling: The request is then processed by your backend API: [Link to backend API][2]
+- Your backend makes the necessary request and returns the response: [Link to response handling][3]
+- Response Delivery: The CustomIdentityRequestWrapperProxy receives this response and passes it back to the components. [CustomIdentityRequestWrapperProxy request method][4]
+
+[1]: https://github.com/kraju3/v3-scheduler/blob/6a3e9ba336136ea9488a1a42af842094e6b69045/app/components/scheduler.identity.ts#L96 "Link to method"
+[2]: https://github.com/kraju3/v3-scheduler/blob/6a3e9ba336136ea9488a1a42af842094e6b69045/app/routes/scheduler.api.ts#L6 "Link to backend API"
+[3]: https://github.com/kraju3/v3-scheduler/blob/6a3e9ba336136ea9488a1a42af842094e6b69045/app/models/nylas/scheduler.server.ts#L18 "Link to response handling"
+[4]: https://github.com/kraju3/v3-scheduler/blob/6a3e9ba336136ea9488a1a42af842094e6b69045/app/components/scheduler.identity.ts#L119 "CustomIdentityRequestWrapperProxy request method"
 
 ## Deployment
 
