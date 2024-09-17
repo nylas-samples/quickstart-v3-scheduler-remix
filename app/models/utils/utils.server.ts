@@ -65,6 +65,12 @@ export function parseQueryParams<T extends object>(
         [currKey]: value === "true",
       };
     }
+    if (!isNaN(Number(value))) {
+      return {
+        ...acc,
+        [currKey]: Number(value),
+      };
+    }
     if (value) {
       const parsedValues = value.split(",");
       return {

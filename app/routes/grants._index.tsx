@@ -1,5 +1,7 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useState } from "react";
+import Pagination from "~/components/common/pagintation";
 import GrantListView from "~/components/grants";
 import { Grant } from "~/models/nylas/grant.server";
 import { parseQueryParams } from "~/models/utils/utils.server";
@@ -127,6 +129,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Grants() {
   const { grants, limit, offset } = useLoaderData<LoaderData>();
+  const navigate = useNavigate();
+  const [paginationButtonState] = useState(() => {
+    if (!grants.length) {
+      return {
+        nextDisabled: offset > 0,
+        prevDisabled: offset <= 0,
+      };
+    }
+    if (offset <= 0) {
+      return {
+        nextDisabled: false,
+        prevDisabled: true,
+      };
+    }
+
+    return {
+      nextDisabled: false,
+      prevDisabled: false,
+    };
+  });
+
+  const handlePagination = (method: "prev" | "next") => {
+    if (method === "prev") {
+      const newOffset = offset - limit;
+      return navigate(`/grants?limit=${limit}&offset=${newOffset}`);
+    }
+
+    const newOffset = offset + limit;
+
+    return navigate(`/grants?limit=${limit}&offset=${newOffset}`);
+  };
   return (
     <section className="dark:bg-gray-900">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
@@ -138,9 +171,14 @@ export default function Grants() {
           </div>
         </main>
       </div>
-      <div className=" m-auto flex h-full items-center justify-center">
-        <GrantListView grants={grants} limit={limit} offset={offset} />
+      <div className=" m-auto flex flex-col h-full items-center justify-center">
+        <GrantListView grants={grants} />
       </div>
+      <Pagination
+        handlePagination={handlePagination}
+        nextDisabled={paginationButtonState.nextDisabled}
+        prevDisabled={paginationButtonState.prevDisabled}
+      />
     </section>
   );
 }
