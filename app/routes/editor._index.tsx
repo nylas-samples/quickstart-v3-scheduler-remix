@@ -47,7 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (editorQueryParams.accessType === AccessType.NONE) {
     if (!editorQueryParams.email || !editorQueryParams.grantId) {
-      return redirect("/grant");
+      return redirect("/grants");
     }
     userCreds = {
       email: editorQueryParams.email,

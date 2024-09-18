@@ -28,7 +28,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const grants = await grantServer.getGrants({ queryParams });
 
   return json({
-    grants: grants,
+    grants,
     ...queryParams,
   });
 }

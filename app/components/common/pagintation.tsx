@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 type PaginationProps = {
   handlePagination: (method: PaginationMethod) => void;
   nextDisabled: boolean;
@@ -11,6 +13,16 @@ export default function Pagination({
   nextDisabled,
   prevDisabled,
 }: PaginationProps) {
+  const buttonCSS = useMemo(() => {
+    return {
+      nextButtonCSS:
+        nextDisabled &&
+        "bg-gray-300 px-4 py-2 rounded-md cursor-not-allowed opacity-50 hover:none",
+      prevButtonCSS:
+        prevDisabled &&
+        "bg-gray-300 px-4 py-2 rounded-md cursor-not-allowed opacity-50",
+    };
+  }, [nextDisabled, prevDisabled]);
   const handleNextorPrev = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     method: PaginationMethod
@@ -24,7 +36,7 @@ export default function Pagination({
           handleNextorPrev(e, "prev");
         }}
         disabled={prevDisabled}
-        className="flex items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        className={`flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${buttonCSS.prevButtonCSS}`}
       >
         Prev
         <svg
@@ -48,7 +60,7 @@ export default function Pagination({
           handleNextorPrev(e, "next");
         }}
         disabled={nextDisabled}
-        className="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        className={`flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${buttonCSS.nextButtonCSS}`}
       >
         Next
         <svg
