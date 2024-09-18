@@ -4,6 +4,14 @@
 
 ## Prerequisites
 
+- Nylas Application
+- Connectors (Optional)
+
+  > - Google
+  > - Microsoft
+  > - ICloud
+  > - EWS
+
 - Add environment variable to your project
 
 ```shellscript
@@ -12,7 +20,7 @@
       API_ENDPOINT=https://api.us.nylas.com/v3
 ```
 
-- Add two redirect_uri as `JavaScript` to your Nylas application
+- Add two redirect_uri as `JavaScript` to your Nylas application (Optional)
   - `http://localhost:{port}/editor` - Standard Editor Auth
   - `http://localhost:{port}/callback` - Access Token Flow
 
@@ -39,8 +47,9 @@ It supports the following flows:
 ## Routes
 
 - `/editor` - Where the Editor component is rendered
+- `/grants` - Grants List view to access the `No Auth Flow`
 - `/scheduler/:configurationId` - Where the NylasScheduling component is rendered
-- `/scheduler/auth` - Where the access token flow is triggered from for `Access Token Flow`
+- `/scheduler/auth` - Where the access token flow is triggered from for `Access Token Flow` and authentication/reauthentication flow new and existing grants
 - `/scheduler/api` - An API route in remix to make proxy requests for `No Auth Flow`
 
 ## Query Params
@@ -78,7 +87,9 @@ export type SchedulerCustomQueryParams = {
 
 ## No Auth Flow
 
-- This flow utilizes the `nylasApiRequest` Editor prop and the `CustomIdentityRequestWrapperProxy` class to proxy scheduler component requests to your backend.
+- This flow will first load all grants in your application that can supports the Scheduling functionalities
+- Once you have selected a valid and an applicable grant, it will redirect you to the Scheduler editor page
+- This flow utilizes the `CustomIdentityRequestWrapperProxy` class to proxy scheduler component requests to your backend.
 - It eliminates the need for user authentication to access the `NylasSchedulerEditor` component.
 
 ### High Level (Request -> Response -> `NylasSchedulerEditor`)

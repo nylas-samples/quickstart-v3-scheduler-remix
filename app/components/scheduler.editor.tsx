@@ -109,6 +109,11 @@ export default function NylasSchedulerEditor({
                 deleteButtonClick: async (e) => {
                   console.log("Page deleted", e);
                 },
+                previewButtonClicked: async (event, connector) => {
+                  event.preventDefault();
+                  console.log("Event", event);
+                  console.log("connector", connector);
+                },
               }}
               mode="app"
               nylasSessionsConfig={{

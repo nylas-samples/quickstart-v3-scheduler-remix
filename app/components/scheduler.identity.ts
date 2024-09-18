@@ -22,6 +22,7 @@ export class CustomIdentityRequestWrapperAccessToken {
   }
   async request<T = any>(args: any): Promise<T> {
     try {
+      console.log("Args", args);
       const response = await fetch(`${this.domain}/grants/me/${args.path}`, {
         method: args.method,
         body: JSON.stringify(args.body),

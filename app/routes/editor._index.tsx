@@ -33,14 +33,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const editorQueryParams = parseQueryParams<EditorQueryParams>(
     url.searchParams,
-    [
-      "configurationId",
-      "requiresSlug",
-      "accessType",
-      "configurationId",
-      "email",
-      "grantId",
-    ]
+    ["configurationId", "requiresSlug", "accessType", "email", "grantId"]
   );
   let userCreds: LoaderData["userCreds"] = undefined;
   if (editorQueryParams.accessType === AccessType.ACCESS_TOKEN) {
@@ -54,7 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (editorQueryParams.accessType === AccessType.NONE) {
     if (!editorQueryParams.email || !editorQueryParams.grantId) {
-      return redirect("/grant");
+      return redirect("/grants");
     }
     userCreds = {
       email: editorQueryParams.email,

@@ -14,6 +14,10 @@ export function transformToCamelCase(object: any) {
   return camelCase(object);
 }
 
+export function transformListToCamelCase<T>(array: T[]) {
+  return array.map((item: T) => camelCase(item));
+}
+
 /**
  * Tool to convert the bookingRef to [configId,bookingId]
  * @param compactString
@@ -43,7 +47,7 @@ export function convertBookingRef(compactString: string) {
   return [uuid1, uuid2];
 }
 
-type StringOrBoolean = string | boolean;
+type StringOrBoolean = string | boolean | number;
 
 type StringKeys<T> = {
   [K in keyof T]: T[K] extends StringOrBoolean ? K : never;
@@ -59,6 +63,12 @@ export function parseQueryParams<T extends object>(
       return {
         ...acc,
         [currKey]: value === "true",
+      };
+    }
+    if (value && !isNaN(Number(value))) {
+      return {
+        ...acc,
+        [currKey]: Number(value),
       };
     }
     if (value) {
