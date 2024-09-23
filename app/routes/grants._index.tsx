@@ -9,21 +9,15 @@ import { parseQueryParams } from "~/models/utils/utils.server";
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
 
-  let queryParams = {
-    limit: 5,
-    offset: 0,
-  };
-  const parsedQueryParams = parseQueryParams<typeof queryParams>(
+  let queryParams = parseQueryParams<{ limit: number; offset: number }>(
     url.searchParams,
     ["limit", "offset"]
   );
 
-  if (parsedQueryParams.limit && parsedQueryParams.offset) {
-    queryParams = {
-      limit: parsedQueryParams.limit,
-      offset: parsedQueryParams.offset,
-    };
-  }
+  queryParams = {
+    limit: queryParams.limit ?? 5,
+    offset: queryParams.offset ?? 0,
+  };
 
   const grants = await grantServer.getGrants({ queryParams });
 
