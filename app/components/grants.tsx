@@ -25,7 +25,7 @@ function GrantView({ grant }: { grant: Grant }) {
     }
 
     return {
-      path: `/editor?accessType=${AccessType.NONE}&email=${grant.email}&grantId=${grant.id}`,
+      path: `/editor?accessType=${AccessType.NONE}&email=${grant.email}&grantId=${grant.id}&provider=${grant.provider}`,
       buttonText: "View Pages",
       disabled: false,
       buttonCSS: `bg-blue-600 hover:bg-blue-700`,

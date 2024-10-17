@@ -6,6 +6,7 @@ export type SessionData = Partial<{
   email: string;
   accessToken: string;
   refreshToken: string;
+  provider: string;
 }>;
 
 type SessionFlashData = {
@@ -20,6 +21,7 @@ const setSession = async (payload: any) => {
   session.set("accessToken", payload.accessToken);
   session.set("email", payload.email);
   session.set("refreshToken", payload.refreshToken);
+  session.set("provider", payload.provider);
 
   return session;
 };
@@ -31,8 +33,9 @@ const getSessionValues = async (request: Request) => {
   const accessToken = session.get("accessToken");
   const email = session.get("email");
   const refreshToken = session.get("refreshToken");
+  const provider = session.get("provider");
 
-  return { grantId, accessToken, email, refreshToken };
+  return { grantId, accessToken, email, refreshToken, provider };
 };
 
 const { getSession, commitSession, destroySession } =

@@ -33,7 +33,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const editorQueryParams = parseQueryParams<EditorQueryParams>(
     url.searchParams,
-    ["configurationId", "requiresSlug", "accessType", "email", "grantId"]
+    [
+      "configurationId",
+      "requiresSlug",
+      "accessType",
+      "email",
+      "grantId",
+      "provider",
+    ]
   );
   let userCreds: LoaderData["userCreds"] = undefined;
   if (editorQueryParams.accessType === AccessType.ACCESS_TOKEN) {
@@ -46,12 +53,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   if (editorQueryParams.accessType === AccessType.NONE) {
-    if (!editorQueryParams.email || !editorQueryParams.grantId) {
+    if (
+      !editorQueryParams.email ||
+      !editorQueryParams.grantId ||
+      !editorQueryParams.provider
+    ) {
       return redirect("/grants");
     }
     userCreds = {
       email: editorQueryParams.email,
       grantId: editorQueryParams.grantId,
+      provider: editorQueryParams.provider,
     } as SessionData;
   }
 

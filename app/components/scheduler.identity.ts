@@ -5,12 +5,25 @@ interface ICustomIdentityRequestWrapper {
   grantId: string;
   email: string;
   domain?: string;
+  provider?: string;
 }
+
+type DataResponseError = {
+  type?: string;
+  code?: number | string;
+  title?: string;
+  message?: string;
+  provider_error?: {
+    error: Record<string, any>;
+  };
+};
+type DataResponseReturnType<T = any> = [T, null] | [null, DataResponseError];
 
 export class CustomIdentityRequestWrapperAccessToken {
   private accessToken: string | undefined;
   private grantId: string;
   private email: string;
+  private provider: string | undefined;
   private domain: string | undefined;
 
   constructor(config: ICustomIdentityRequestWrapper) {
@@ -19,8 +32,9 @@ export class CustomIdentityRequestWrapperAccessToken {
     this.grantId = config.grantId;
     this.email = config.email;
     this.domain = config.domain || "https://api.us.nylas.com/v3";
+    this.provider = config.provider;
   }
-  async request<T = any>(args: any): Promise<T> {
+  async request<T = any>(args: any): Promise<DataResponseReturnType<T>> {
     try {
       console.log("Args", args);
       const response = await fetch(`${this.domain}/grants/me/${args.path}`, {
@@ -34,15 +48,12 @@ export class CustomIdentityRequestWrapperAccessToken {
       });
 
       // Check if the response is not okay (e.g., 404, 500)
+      const data = await response.json();
       if (!response.ok) {
-        console.error(`Error: ${response.status} ${response.statusText}`);
-        return {
-          error: `Error: ${response.status} ${response.statusText}`,
-        } as any;
+        return [null, data];
       }
 
       // Parse the response
-      const data = await response.json();
       return [data, null] as any;
     } catch (error) {
       console.error("Fetch error:", error);
@@ -59,6 +70,7 @@ export class CustomIdentityRequestWrapperAccessToken {
     return {
       id: this.grantId,
       email: this.email,
+      provider: this.provider,
     };
   }
 
@@ -83,7 +95,6 @@ export class CustomIdentityRequestWrapperProxy {
   private grantId: string;
   private email: string;
   private provider: string | undefined;
-  private name: string | undefined;
   private domain: string | undefined;
 
   constructor(config: ICustomIdentityRequestWrapper) {
@@ -91,8 +102,9 @@ export class CustomIdentityRequestWrapperProxy {
     this.grantId = config.grantId;
     this.email = config.email;
     this.domain = config.domain;
+    this.provider = config.provider;
   }
-  async request<T = any>(args: any): Promise<T> {
+  async request<T = any>(args: any): Promise<DataResponseReturnType<T>> {
     try {
       const response = await fetch(`${this.domain}/scheduler/api`, {
         method: "POST",
@@ -109,15 +121,21 @@ export class CustomIdentityRequestWrapperProxy {
       });
 
       // Check if the response is not okay (e.g., 404, 500)
+      const data = await response.json();
       if (!response.ok) {
-        console.error(`Error: ${response.status} ${response.statusText}`);
-        return {
-          error: `Error: ${response.status} ${response.statusText}`,
-        } as any;
+        const { error } = data;
+        return [
+          null,
+          {
+            type: error?.type,
+            message: error?.message,
+            code: response.status,
+            provider_error: data.error?.provider_error,
+          },
+        ] as any;
       }
 
       // Parse the response
-      const data = await response.json();
       return [data, null] as any;
     } catch (error) {
       console.error("Fetch error:", error);
@@ -134,6 +152,7 @@ export class CustomIdentityRequestWrapperProxy {
     return {
       id: this.grantId,
       email: this.email,
+      provider: this.provider,
     };
   }
 
