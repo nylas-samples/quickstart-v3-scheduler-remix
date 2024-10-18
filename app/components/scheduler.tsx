@@ -9,11 +9,27 @@ interface CustomEvent<T = unknown> extends Event {
 
 type NylasSchedulingCustomEvent<T> = CustomEvent<T>;
 
+/**
+ * Type SchedulerCustomQueryParams
+ * @param name - Name of the user to prefill the booking form
+ * @param email - Email of the user to prefill the booking email
+ */
+
 export type SchedulerCustomQueryParams = {
   name: string;
   email: string;
 };
 
+/**
+ * Type NylasCustomSchedulerProps
+ * @param configId - Configuration ID of the scheduler
+ * @param bookingId - Booking ID of the scheduler
+ * @param cancelFlow - Boolean to check if the flow is cancel flow
+ * @param rescheduleFlow - Boolean to check if the flow is reschedule flow
+ * @param sessionId - Session ID of the scheduler
+ * @param queryParams - Query Params for the scheduler
+ * @param domain - Domain of the scheduler
+ */
 type NylasCustomSchedulerProps = {
   configId: string;
   bookingId?: string;
@@ -24,10 +40,16 @@ type NylasCustomSchedulerProps = {
   domain: string;
 };
 
-interface CustomEvent<T = unknown> extends Event {
-  readonly detail: T;
-}
-
+/**
+ * NylasCustomScheduler
+ * @param configId - Configuration ID of the scheduler
+ * @param bookingId - Booking ID of the scheduler
+ * @param cancelFlow - Boolean to check if the flow is cancel flow
+ * @param rescheduleFlow - Boolean to check if the flow is reschedule flow
+ * @param sessionId - Session ID of the scheduler
+ * @param queryParams - Query Params for the scheduler
+ * @param domain - Domain of the scheduler
+ */
 export default function NylasCustomScheduler({
   configId,
   bookingId = "",
@@ -71,6 +93,23 @@ export default function NylasCustomScheduler({
     }
   }, [cancelFlow, queryParams]);
 
+  const timeSlotConfirmed = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (e: CustomEvent, connector?: any) => {
+      event?.preventDefault();
+      console.log("Time slot confirmed");
+      if (queryParams?.name && queryParams.email) {
+        await connector.scheduler.bookTimeSlot({
+          primaryParticipant: {
+            name: queryParams.name,
+            email: queryParams.email,
+          },
+        });
+      }
+    },
+    [queryParams]
+  );
+
   const props = useMemo(() => {
     if (sessionId) {
       return {
@@ -97,6 +136,7 @@ export default function NylasCustomScheduler({
               eventOverrides={{
                 detailsConfirmed: commonEventHander,
                 bookingInfo: commonEventHander,
+                timeSlotConfirmed: timeSlotConfirmed,
                 //bookingFormSubmitted: commonEventHander,
               }}
               onBookedEventInfo={(event: CustomEvent) => {

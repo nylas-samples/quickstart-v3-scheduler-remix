@@ -29,7 +29,11 @@ export enum APIAction {
   DELETE = "DELETE",
 }
 
-//could use the auth decorator
+/**
+ * API Service to make API calls
+ * @param requestBody - @APIRequest
+ * @returns - @APIResponse<T>
+ */
 
 export class ApiService {
   static async get<T>(requestBody: APIRequest) {

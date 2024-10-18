@@ -33,18 +33,6 @@ const schedulerMiddleWare = async (args: any): Promise<[any, number]> => {
 
     // Check if the response is not okay (e.g., 404, 500)
     const data = await response.json();
-    if (!response.ok) {
-      logger.error(
-        { data },
-        `Error: ${response.status} ${response.statusText}`
-      );
-      return [
-        {
-          error: `Error: ${response.status} ${response.statusText}`,
-        },
-        response.status,
-      ] as any;
-    }
     return [data, response.status] as any;
   } catch (error) {
     logger.error("Fetch error:", error);

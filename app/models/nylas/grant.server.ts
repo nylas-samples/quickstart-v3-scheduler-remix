@@ -6,6 +6,14 @@ import {
   transformListToCamelCase,
 } from "../utils/utils.server";
 
+/**
+ * Type Grant
+ * @param id - ID of the grant
+ * @param email - Email of the grant
+ * @param provider - Provider of the grant
+ * @param grantStatus - Status of the grant
+ */
+
 export type Grant = {
   id: string;
   email: string;
@@ -20,6 +28,12 @@ type GrantListQueryParams = Partial<{
 }>;
 
 const API_ENDPOINT = `${configServer.API_ENDPOINT}/grants`;
+
+/**
+ * Get Grants
+ * @param queryParams - GrantListQueryParams
+ * @returns - List of Grants
+ */
 
 const getGrants = async ({
   queryParams,

@@ -7,6 +7,14 @@ import {
   CustomIdentityRequestWrapperProxy,
 } from "./scheduler.identity";
 
+/**
+ * @param nylasClientId - Nylas Client ID
+ * @param domain - https://api.us.nylas.com/v3 or https://api.eu.nylas.com/v3
+ * @param queryParams - if you want to default the view to a specific config please pass in a configurationId parameter
+ * @param userCreds - if you want to default to use Access token flow or No Auth flow
+ * @param origin - Origin of the page
+ */
+
 type EditorProps = {
   nylasClientId: string;
   domain?: string;
@@ -15,13 +23,30 @@ type EditorProps = {
   origin?: string;
 };
 
+/**
+ * Query Params for EditorQueryParams
+ * @param configurationId - if you want to default the view to a specific config please pass in a configurationId parameter
+ * @param requiresSlug - if you want to default to use hosted view
+ * @param accessType  - if you want to default to use Access token flow or No Auth flow
+ * @param email    - email of the user - Used by No Auth Flow
+ * @param grantId   - grantId of the user - Used by No Auth Flow
+ */
+
 export type EditorQueryParams = {
   configurationId: string;
   requiresSlug: boolean;
   accessType: AccessType;
   email: string;
   grantId: string;
+  provider: string;
 };
+
+/**
+ * AccessType
+ * @param STANDARD - Standard Auth flow
+ * @param ACCESS_TOKEN - Access Token flow
+ * @param NONE - No Auth flow
+ */
 
 export enum AccessType {
   STANDARD = "standard",
@@ -30,17 +55,12 @@ export enum AccessType {
 }
 
 /**
- *
- * @param nylasClientId
+ * Generate comments for the NylasSchedulerEditor
+ * @param nylasClientId - Nylas Client ID
  * @param domain - https://api.us.nylas.com/v3 or https://api.eu.nylas.com/v3
  * @param queryParams - if you want to default the view to a specific config please pass in a configurationId parameter
- *      @param configurationID = if you want to default the view to a specific config please pass in a configurationId parameter
- *      @param requiresSlug - if you want to default to use hosted view
- *
- *
- * @example
- *   If you don't want the user to reauthenticate then you need to use the nylasApiRequest prop with a CustomIdentityRequestWrapper component which requires a user level access token.
- * @returns NylasSchedulerEditor component
+ * @param userCreds - if you want to default to use Access token flow or No Auth flow
+ * @param origin - Origin of the page
  */
 
 export default function NylasSchedulerEditor({
@@ -75,6 +95,7 @@ export default function NylasSchedulerEditor({
         email: userCreds?.email as string,
         grantId: userCreds?.grantId as string,
         domain: origin,
+        provider: userCreds?.provider as string,
       });
     }
 
@@ -130,11 +151,20 @@ export default function NylasSchedulerEditor({
                     // NOTE: Keep this path same for reschedule and cancel flow
                     rescheduling_url: `${origin}/scheduler/reschedule/:booking_ref`,
                     cancellation_url: `${origin}/scheduler/cancel/:booking_ref`,
+                    confirmation_redirect_url: `${origin}/confirmation`, // used for Hosted scheduling pages
                   },
                 },
               }}
               {...props()}
-            ></Scheduler.NylasSchedulerEditor>
+            >
+              <div slot="custom-page-style-inputs">
+                <Scheduler.InputImageUrl name="company_logo_url" />
+                <div className="color-picker-container">
+                  <label htmlFor="color">Primary color</label>
+                  <Scheduler.InputColorPicker name="color" />
+                </div>
+              </div>
+            </Scheduler.NylasSchedulerEditor>
           );
         }}
       </ClientOnly>
